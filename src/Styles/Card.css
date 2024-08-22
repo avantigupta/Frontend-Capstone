@@ -1,0 +1,46 @@
+/* Container for each card */
+.card{
+    margin-left: 15%;
+    display: flex;
+    flex-direction: row;
+}
+.card-container {
+    width: 250px; /* Width of each card */
+    padding: 15px;
+    margin: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for card effect */
+    transition: transform 0.2s ease-in-out; /* Smooth animation on hover */
+    text-align: center; /* Center-align text */
+  }
+  
+  /* Add hover effect to the card */
+  .card-container:hover {
+    transform: translateY(-10px); /* Slightly lift the card on hover */
+  }
+  
+  /* Book image styling */
+  .card-container img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Ensures the image covers the container without distorting */
+    border-radius: 8px; /* Round the corners of the image */
+    margin-bottom: 15px; /* Space between image and title */
+  }
+  
+  /* Book title styling */
+  .card-container h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #333; /* Darker color for readability */
+  }
+  
+  /* Author name styling */
+  .card-container p {
+    font-size: 1em;
+    color: #666; /* Lighter color for the author name */
+    margin: 0;
+  }
+  
+  

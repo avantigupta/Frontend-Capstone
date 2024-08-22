@@ -1,0 +1,97 @@
+ body {
+    font-family: 'Arial', sans-serif;
+    background: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+
+  }
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+  }
+  
+  .login-container {
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    height: 80%;
+  } 
+/*   
+  .login-content, .login-img {
+    padding: 20px;
+  
+    flex: 1;
+  }
+   */
+   .radio-group {
+    display: flex;
+    gap: 35px;
+    justify-content: center;
+    margin-bottom: 20px;
+  } 
+  .radio-input {
+    margin-right: 10px;
+    accent-color: purple; /* Sets the color of the radio button */
+  }
+   
+  .radio-group label {
+    font-size: 15px;
+    color: #000000;
+    cursor: pointer;
+  } 
+   .login-content {
+    text-align: center;
+    width: 400px;
+    padding: 5%;
+    display: flex;
+    align-items: center;
+  }
+  
+   
+  h2 {
+    margin-top: 60px;
+  }
+  
+ 
+  form {
+    text-align: center;
+  }
+  
+  .login-input {
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #F7F1F7;
+    border: none;
+    border-radius: 8px;
+    width: 80%;
+    color: #CDC7CE;
+  }
+ 
+  .heading{
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .toggle{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-img img {
+    width: 100%;
+    max-width: 500px; /* Adjust this value as needed */
+    height: auto;
+    object-fit: cover;
+  }
+  
