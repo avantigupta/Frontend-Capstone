@@ -1,11 +1,11 @@
 import React from 'react'
+import HocContainer from '../Components/HocContainer';
 
 function Books() {
   return (
     <div>
-      
     </div>
   )
 }
 
-export default Books
+export default HocContainer(Books);

@@ -1,0 +1,8 @@
+.dashboard-hoc-container {
+    display: grid;
+    grid-template-columns: 17% 83%;
+}
+
+.dashboard-hoc-right-container{
+    border-radius: 5px;
+}

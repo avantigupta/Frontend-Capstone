@@ -5,24 +5,22 @@ import Login from "./Pages/Login";
 import Books from "./Pages/Books";
 import Issuances from "./Pages/Issuances";
 import Users from "./Pages/Users";
-import Header from "./Components/Header"; // assuming you have a Header component
-import SideNav from "./Components/SideNav"; // assuming you have a SideNav component
+import Categories from "./Pages/Categories";
 
 function App() {
   return (
     <Router>
       <div className="app-container">
-        {/* <Header />
-        <SideNav />  */}
-        <main>
+      
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<DashBoard />} />
-            <Route path="/books" element={<Books />} />
-            <Route path="/issuances" element={<Issuances />} />
-            <Route path="/users" element={<Users />} />
+            <Route exact path="/" element={<Login />} />
+            <Route exact path="/dashboard" element={<DashBoard />} />
+            <Route exact path="/books" element={<Books />} />
+            <Route exact path="/issuances" element={<Issuances />} />
+            <Route exact path="/users" element={<Users />} />
+            <Route exact path="/categories" element={<Categories />} />
           </Routes>
-        </main>
+    
       </div>
     </Router>
   );

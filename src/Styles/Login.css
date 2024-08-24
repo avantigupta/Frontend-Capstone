@@ -23,13 +23,7 @@
     position: relative;
     height: 80%;
   } 
-/*   
-  .login-content, .login-img {
-    padding: 20px;
-  
-    flex: 1;
-  }
-   */
+
    .radio-group {
     display: flex;
     gap: 35px;
@@ -38,7 +32,7 @@
   } 
   .radio-input {
     margin-right: 10px;
-    accent-color: purple; /* Sets the color of the radio button */
+    accent-color: purple; 
   }
    
   .radio-group label {
@@ -71,7 +65,8 @@
     border: none;
     border-radius: 8px;
     width: 80%;
-    color: #CDC7CE;
+    color: #000000;
+    
   }
  
   .heading{
@@ -90,7 +85,7 @@
 
   .login-img img {
     width: 100%;
-    max-width: 500px; /* Adjust this value as needed */
+    max-width: 500px; 
     height: auto;
     object-fit: cover;
   }

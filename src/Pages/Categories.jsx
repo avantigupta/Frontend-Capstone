@@ -1,7 +1,7 @@
 import React from 'react'
 import HocContainer from '../Components/HocContainer'
 
-function Users() {
+function Categories() {
   return (
     <div>
       
@@ -9,4 +9,4 @@ function Users() {
   )
 }
 
-export default HocContainer(Users)
+export default HocContainer(Categories)

@@ -1,12 +1,13 @@
 import React from "react";
 import SideNav from "./SideNav";
 import Header from "./Header";
+import "../Styles/HocContainer.css";
 
-const DashboardHoc = (Component) =>
+const HocContainer = (Component) =>
   function HOC() {
     return (
       <>
-        <Header />
+        <Header title="Dashboard"/> 
         <div className="dashboard-hoc-container">
           <SideNav />
           <div className="dashboard-hoc-right-container">
@@ -17,4 +18,4 @@ const DashboardHoc = (Component) =>
     );
   };
 
-export default DashboardHoc;
+export default HocContainer;

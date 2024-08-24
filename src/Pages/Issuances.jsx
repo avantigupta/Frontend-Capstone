@@ -1,4 +1,5 @@
 import React from 'react'
+import HocContainer from '../Components/HocContainer';
 
 function Issuances() {
   return (
@@ -8,4 +9,4 @@ function Issuances() {
   )
 }
 
-export default Issuances
+export default HocContainer(Issuances);
