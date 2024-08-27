@@ -13,7 +13,6 @@ function Header({ title }) {
       
       <h1 className="header-title">{title}</h1>
       <div className="header-right-section">
-        <input type="text" className="header-search-bar" placeholder="Search books, categories..." />
         <div className="header-profile-section">
           <img
             src={profile}

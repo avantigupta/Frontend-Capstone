@@ -13,13 +13,13 @@ function App() {
       <div className="app-container">
       
           <Routes>
-            <Route exact path="/" element={<Login />} />
+            <Route exact path="/" element={ <Login />} />
             <Route exact path="/dashboard" element={<DashBoard />} />
             <Route exact path="/books" element={<Books />} />
             <Route exact path="/issuances" element={<Issuances />} />
             <Route exact path="/users" element={<Users />} />
-            <Route exact path="/categories" element={<Categories />} />
-          </Routes>
+            <Route exact path="/categories" element={<Categories />} /> 
+            </Routes>
     
       </div>
     </Router>

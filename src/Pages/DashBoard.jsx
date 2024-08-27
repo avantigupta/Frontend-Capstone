@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import background from "../Assets/cta-bg.png";
-import library from "../Assets/our-libraries.png";
 import "../Styles/Dashboard.css";
 import book from "../Icons/librarian.png";
 import users from "../Icons/authors.png";
@@ -28,6 +27,10 @@ function Dashboard() {
             <img src={users} alt="" className="dashboard-icons" />
             <h3> 100+ Users</h3>
           </div>
+          <div className="dashboard-card">
+            <img src={readers} alt="" className="dashboard-icons" />
+            <h3>50 Active Readers</h3>
+          </div>
         </div>
         <div className="card-row">
           <div className="dashboard-card">
@@ -36,7 +39,11 @@ function Dashboard() {
           </div>
           <div className="dashboard-card">
             <img src={readers} alt="" className="dashboard-icons" />
-            <h3>50 Active Readers</h3>
+            <h3>20 In House Users</h3>
+          </div>
+          <div className="dashboard-card">
+            <img src={readers} alt="" className="dashboard-icons" />
+            <h3>10 Takeaway Readers</h3>
           </div>
         </div>
         

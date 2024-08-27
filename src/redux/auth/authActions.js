@@ -1,64 +1,24 @@
-// import { LOGIN, LOGOUT } from "./authTypes";
-// import axiosInstance from '../../utils/axiosConfig';
-
-// export const loginUser = (user) => async (dispatch) => {
-//     try {
-//         const response = await axiosInstance.post('/auth/login', {
-//           user
-//         });
-
-//         const { id, name,email,role, token } = response.data;
-
-//         dispatch({
-//             type: LOGIN,
-//             payload: {
-//                 id,
-//                 name,
-//                 email,
-//                 role,
-//                 token,
-//             },
-//         });
-
-//         // Store token in localStorage
-//         localStorage.setItem('token', token);
-
-//     } catch (error) {
-//         console.error('Login failed:', error);
-
-//         if (error.response && error.response.data) {
-//             alert(`Login failed: ${error.response.data.message}`);
-//         } else {
-//             alert('Login failed due to a server error. Please try again later.');
-//         }
-
-//         throw error;
-//     }
-// };
-
-// export const logoutUser = () => {
-//     localStorage.removeItem('token');
-//     return {
-//         type: LOGOUT,
-//     };
-// };
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 // Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:8086/auth",
+  baseURL: "http://localhost:8086",
   headers: {
     "Content-Type": "application/json",
   },
 });
+
 // Login User (Async Thunk)
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post("/login", credentials);
+      const response = await api.post("/auth/login", credentials);
+      console.log("Login successful:", response.data); // Log the response
       return response.data;
     } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message); // Log the error
       return rejectWithValue(error.response?.data || "An error occurred");
     }
   }
@@ -68,13 +28,14 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/signup", userData);
+      const response = await api.post("/auth/signup", userData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
   }
 );
+
 // Slice
 const authActions = createSlice({
   name: "auth",
@@ -89,7 +50,7 @@ const authActions = createSlice({
       state.user = null;
       state.token = null;
       state.status = "idle";
-      // Optionally clear token from localStorage or cookies
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -100,7 +61,13 @@ const authActions = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.token = action.payload.token;
-        // Save token in localStorage or cookies if needed
+        state.user = {
+          id: action.payload.id,
+          name: action.payload.name,
+          email: action.payload.email,
+          role: action.payload.role,
+        };
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
@@ -119,5 +86,6 @@ const authActions = createSlice({
       });
   },
 });
+
 export const { logout } = authActions.actions;
 export default authActions.reducer;
