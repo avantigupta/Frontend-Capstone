@@ -9,4 +9,4 @@ function Issuances() {
   )
 }
 
-export default HocContainer(Issuances);
+export default HocContainer(Issuances, "Issuances");

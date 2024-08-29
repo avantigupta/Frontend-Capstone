@@ -8,4 +8,4 @@ function Books() {
   )
 }
 
-export default HocContainer(Books);
+export default HocContainer(Books, "Books");

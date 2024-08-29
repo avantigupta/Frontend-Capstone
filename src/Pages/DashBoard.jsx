@@ -66,4 +66,4 @@ function Dashboard() {
   );
 }
 
-export default HocContainer(Dashboard);
+export default HocContainer(Dashboard, "Dashboard");

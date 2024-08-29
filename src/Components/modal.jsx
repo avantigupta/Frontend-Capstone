@@ -1,4 +1,5 @@
 import "../Styles/modal.css";
+import Button from "./Button";
 
 const modal = ({ isOpen, onClose, onSubmit, name, setCategoryName }) => {
     if (!isOpen) return null;
@@ -24,9 +25,8 @@ const modal = ({ isOpen, onClose, onSubmit, name, setCategoryName }) => {
                             required
                         />
                     </div>
-                    <button type="submit" className="submit-btn">
-                        Add Category
-                    </button>
+                 
+                    <Button type="submit" className="submit-btn">Add</Button>
                 </form>
             </div>
         </div>

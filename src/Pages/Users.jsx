@@ -9,4 +9,4 @@ function Users() {
   )
 }
 
-export default HocContainer(Users)
+export default HocContainer(Users, "Users")

@@ -15,3 +15,13 @@ export const addCategory = async (category, token) => {
         }
     });
 };
+
+export const deleteCategory = async (id, token) => {
+    console.log('Deleting category with ID:', id);
+    console.log('Using token:', token);
+    return await axiosInstance.delete(`/api/v1/categories/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+}
