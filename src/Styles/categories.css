@@ -1,0 +1,55 @@
+
+.category-page {
+  padding: 20px;
+}
+
+.category-table {
+  width: 80%;
+  border-collapse: collapse;
+  background-color: #f3ebff; 
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.category-table th, .category-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.category-table th {
+  background-color: #9176c5; 
+  color: white;
+}
+
+.category-table td {
+  color: #333;
+}
+
+.category-table tr:hover {
+  background-color: #e5d8ff; 
+}
+
+.edit-btn, .delete-btn {
+  background-color: #9176c5;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.3s;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+  background-color: #8057af; 
+}
+
+.delete-btn {
+  background-color: #ff5757;
+}
+
+.delete-btn:hover {
+  background-color: #e34e4e; 
+}

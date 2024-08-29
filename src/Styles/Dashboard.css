@@ -12,12 +12,11 @@
   }
   
   .welcome-box {
-    background-color: #F1EAF3; /* Light purple background */
+    background-color: #F1EAF3; 
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: left;
-    /* max-width: 550px; */
     width: 100%;
     border: 1px solid #e2c1ff
 

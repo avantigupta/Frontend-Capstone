@@ -1,9 +1,8 @@
+
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-// Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:8086",
+  baseURL: "http://localhost:8086/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,24 +10,26 @@ const api = axios.create({
 
 // Login User (Async Thunk)
 export const loginUser = createAsyncThunk(
-  "auth/loginUser",
+  "/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/login", credentials);
-      console.log("Login successful:", response.data); // Log the response
+      const response = await api.post("/signin", credentials);
+      console.log("Login successful:", response.data); 
       return response.data;
     } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message); // Log the error
-      return rejectWithValue(error.response?.data || "An error occurred");
+      const errorMessage = error.response?.data?.Messsage || "An error occurred";
+      console.error("Login failed:", errorMessage);
+      return rejectWithValue(errorMessage);
     }
   }
 );
+
 // Register User (Async Thunk)
 export const registerUser = createAsyncThunk(
-  "auth/registerUser",
+  "registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/signup", userData);
+      const response = await api.post("/register", userData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
@@ -41,9 +42,12 @@ const authActions = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    token: null,
+    token: localStorage.getItem('token') || null,
     status: "idle",
     error: null,
+    categories: [],
+    categoriesLoading: false,
+    categoriesError: null,
   },
   reducers: {
     logout: (state) => {
@@ -71,7 +75,7 @@ const authActions = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload;
+        state.error = action.payload; 
       })
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";

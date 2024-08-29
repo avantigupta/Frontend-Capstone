@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import "../Styles/Login.css";
 import HeroSection from "../Assets/HeroSection.png";
@@ -9,8 +11,10 @@ import { loginUser } from '../redux/auth/authActions';
 function Login() {
   const [role, setRole] = useState("admin");
   const [placeholderText, setPlaceholderText] = useState("Email");
-  const [username, setUsername] = useState("");  // This will store either email or mobile number
+  const [username, setUsername] = useState("");  
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState(""); 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -21,17 +25,40 @@ function Login() {
   const handleRoleChange = (event) => {
     setRole(event.target.value);
   };
-  const credentials = {
-    username: username,
-    password,
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!username) {
+      newErrors.username = "This field is required";
+    }
+    if (!password) {
+      newErrors.password = "Field is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
+
   const handleLogin = async (event) => {
     event.preventDefault();
+    setErrorMessage(""); 
+
+    if (!validateForm()) return;
+
+    const credentials = {
+      usernameOrPhoneNumber: username,
+      password,
+    };
+
     try {
-      await dispatch(loginUser(credentials)).unwrap();
+      const data = await dispatch(loginUser(credentials)).unwrap();
+      localStorage.setItem("token", data["jwtToken"]);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error.Message === 'Bad credentials') {
+        setErrorMessage("Password and Username do not match");
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -67,18 +94,25 @@ function Login() {
             <input 
               type="text" 
               placeholder={placeholderText} 
-              className='login-input'
+              className={`login-input ${errors.username && 'input-error'}`}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
+            {errors.username && <span className="error-msg">{errors.username}</span>}
+
             <input 
               type="password" 
               placeholder="Password" 
-              className='login-input' 
+              className={`login-input ${errors.password && 'input-error'}`} 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {errors.password && <span className="error-msg">{errors.password}</span>}
+
             <div><Button type="submit" className='login'>Login</Button></div>
+
+      
+            {errorMessage && <span className="error-msg">{errorMessage}</span>}
           </form>
         </div>
         <div className='login-img'>

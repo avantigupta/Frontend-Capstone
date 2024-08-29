@@ -90,3 +90,19 @@
     object-fit: cover;
   }
   
+
+
+  .input-error {
+    border: 1px solid red;
+  }
+   
+
+
+.error-msg {
+  color: red;
+  font-size: 0.7em;
+  margin-bottom: 4px;
+  display:inline-block;
+  width: 100%; 
+  box-sizing: border-box; 
+}
