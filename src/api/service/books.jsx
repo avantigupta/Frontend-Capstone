@@ -4,9 +4,9 @@ export const fetchBooks = async () => {
     return await axiosInstance.get(`/api/v1/books/getBooks`);
 };
 
-// export const getCategoryCount = async () => {
-//     return await axiosInstance.get(`api/v1/categories/category-count`);
-// };
+export const getBookCount = async () => {
+    return await axiosInstance.get(`api/v1/books/books-count`);
+};
 
 export const addBooks = async (book, token) => {
     return await axiosInstance.post(`/api/v1/books/create`, book, {

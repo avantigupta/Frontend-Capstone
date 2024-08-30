@@ -13,6 +13,7 @@ const Books = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [editingBookId, setEditingBookId] = useState(null);
     const [bookTitle, setBookTitle] = useState("");
+    const[quantity, setQuantity]=useState("");
     const [bookAuthor, setBookAuthor] = useState("");
     const [token, setToken] = useState("");
     const [isEditing, setEditing] = useState(false);
@@ -43,9 +44,11 @@ const Books = () => {
     const handleOpenModal = (book = null) => {
         if (book) {
             setBookTitle(book.title);
+            setQuantity(book.quantity);
             setBookAuthor(book.author);
             setEditingBookId(book.id);
         } else {
+          setQuantity("");
             setBookTitle("");
             setBookAuthor("");
             setEditingBookId(null);
@@ -58,7 +61,7 @@ const Books = () => {
     };
 
     const handleSaveBook = async () => {
-        const bookData = { title: bookTitle, author: bookAuthor };
+        const bookData = { title: bookTitle, author: bookAuthor, quantity:quantity };
 
         try {
             if (editingBookId) {
@@ -69,6 +72,7 @@ const Books = () => {
 
             setBookTitle("");
             setBookAuthor("");
+            setQuantity("");
             handleCloseModal();
             const response = await fetchBooks();
             setBooks(response.data);
@@ -96,6 +100,7 @@ const Books = () => {
     const columns = [
         { header: 'S.No', accessor: 'serialNumber' },
         { header: 'Book Title', accessor: 'title' },
+        {header: 'Quantity', accessor: 'quantity'},
         { header: 'Author', accessor: 'author' },
         {
             header: 'Actions',
@@ -123,6 +128,7 @@ const Books = () => {
         bookTitle={bookTitle}
         setBookTitle={setBookTitle}
         bookAuthor={bookAuthor}
+        quantity={quantity}
        setBookAuthor={setBookAuthor}
         isEditing={isEditing}
         isBookPage={true}

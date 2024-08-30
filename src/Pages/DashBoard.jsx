@@ -10,7 +10,9 @@ import axiosInstance from '../api/axiosConfig';
 
 function Dashboard() {
   const [categoryCount, setCategoryCount] = useState(0);
-
+  const [bookCount, setBookCount] = useState(0);
+  
+  
   useEffect(() => {
     const fetchCategoryCount = async () => {
       try {
@@ -24,6 +26,20 @@ function Dashboard() {
     fetchCategoryCount();
   }, []);
 
+  useEffect(()=>{
+    const fetchBookCount = async ()=>{
+      try{
+        const response = await axiosInstance.get('/api/v1/books/books-count');
+        setBookCount(response.data);
+
+      }catch(error){
+        console.log("error fetching book count:", error);
+      }
+    };
+    fetchBookCount();
+  }, []);
+
+
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-welcome-section">
@@ -36,7 +52,7 @@ function Dashboard() {
         <div className="card-row">
           <div className="dashboard-card">
             <img src={book} alt="" className="dashboard-icons" />
-            <h3>350 Total books</h3>
+            <h3>{bookCount} Total books</h3>
           </div>
           <div className="dashboard-card">
             <img src={users} alt="" className="dashboard-icons" />
