@@ -1,36 +1,34 @@
+import React from 'react';
 import "../Styles/modal.css";
-import Button from "./Button";
+import Button from './Button';
+const Modal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  categoryName,
+  setCategoryName,
+  isEditing 
+}) => {
+  if (!isOpen) return null;
 
-const modal = ({ isOpen, onClose, onSubmit, name, setCategoryName }) => {
-    if (!isOpen) return null;
-
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(); 
-    };
-
-    return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <button className="modal-close" onClick={onClose}>
-                    &times;
-                </button>
-                <form onSubmit={handleFormSubmit}>
-                    <div className="form-group">
-                        <label>Category Name</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setCategoryName(e.target.value)}
-                            required
-                        />
-                    </div>
-                 
-                    <Button type="submit" className="submit-btn">Add</Button>
-                </form>
-            </div>
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h2>{isEditing ? "Edit Category" : "Add Category"}</h2>
+        <input
+          type="text"
+          placeholder="Category Name"
+          value={categoryName}
+          onChange={(e) => setCategoryName(e.target.value)}
+        />
+       
+        <div>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onSubmit}>{isEditing ? "Edit" : "Add"}</Button>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default modal;
+export default Modal;

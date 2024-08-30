@@ -25,3 +25,11 @@ export const deleteCategory = async (id, token) => {
         }
     });
 }
+
+export const updateCategory = async (id, category, token) => {
+    return await axiosInstance.put(`/api/v1/categories/update/${id}`, category, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+};
