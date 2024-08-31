@@ -39,7 +39,7 @@ const Modal = ({
               onChange={(e) => setBookAuthor(e.target.value)}
             />
             <input
-            type='number'
+            type='text'
             placeholder='Quantity'
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}

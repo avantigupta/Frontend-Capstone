@@ -46,6 +46,7 @@ const Categories = () => {
           setCategoryName("");
           setEditingCategoryId(null);
         }
+        
         setModalOpen(true);
     };
 

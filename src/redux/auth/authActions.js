@@ -2,7 +2,7 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const api = axios.create({
-  baseURL: "http://localhost:8086/api/v1",
+  baseURL: "http://localhost:8086/api/users",
   headers: {
     "Content-Type": "application/json",
   },

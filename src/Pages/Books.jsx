@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchBooks, updateBook, addBooks} from '../api/service/books';
+import { fetchBooks, updateBook, addBooks, deleteBook} from '../api/service/books';
 import HocContainer from "../Components/HocContainer";
 import "../Styles/books.css";
 import Button from '../Components/Button';
@@ -48,7 +48,7 @@ const Books = () => {
             setBookAuthor(book.author);
             setEditingBookId(book.id);
         } else {
-          setQuantity("");
+            setQuantity("");
             setBookTitle("");
             setBookAuthor("");
             setEditingBookId(null);
@@ -82,16 +82,16 @@ const Books = () => {
         }
     };
 
-    // const handleDelete = async (id) => {
-    //     try {
-    //         await deleteBook(id, token);
-    //         const response = await fetchBooks();
-    //         setBooks(response.data);
-    //     } catch (error) {
-    //         console.error('Error deleting book:', error);
-    //         setError('Failed to delete book');
-    //     }
-    // };
+    const handleDelete = async (id) => {
+        try {
+            await deleteBook(id, token);
+            const response = await fetchBooks();
+            setBooks(response.data);
+        } catch (error) {
+            console.error('Error deleting book:', error);
+            setError('Failed to delete book');
+        }
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -107,7 +107,7 @@ const Books = () => {
             accessor: (book) => (
                 <>
                     <button className="edit-btn" onClick={() => handleOpenModal(book)}>Edit</button>
-                    <button className="delete-btn">Delete</button>
+                    <button className="delete-btn" onClick={()=> handleDelete(book.id)}>Delete</button>
                 </>
             )
         }
@@ -129,6 +129,7 @@ const Books = () => {
         setBookTitle={setBookTitle}
         bookAuthor={bookAuthor}
         quantity={quantity}
+        setQuantity={setQuantity}
        setBookAuthor={setBookAuthor}
         isEditing={isEditing}
         isBookPage={true}

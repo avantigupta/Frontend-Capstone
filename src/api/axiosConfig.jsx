@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
-        console.log('Token retrieved:', token);
+        console.log(token)
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
@@ -22,15 +22,18 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-
 axiosInstance.interceptors.response.use(
     (response) => {
-        console.log('Response:', response); 
         return response;
     },
     (error) => {
-        console.error('Response error:', error); 
+        if (error.response && error.response.status === 401) {
+            console.error('Unauthorized access. Please check your token.');
+        } else {
+            console.error('Response error:', error);
+        }
         return Promise.reject(error);
     }
 );
+
 export default axiosInstance;

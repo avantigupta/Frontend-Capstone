@@ -18,6 +18,15 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [token])
+
   useEffect(() => {
     setPlaceholderText(role === "admin" ? "Email" : "Mobile Number");
   }, [role]);

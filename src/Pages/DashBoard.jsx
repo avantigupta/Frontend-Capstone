@@ -1,12 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import "../Styles/Dashboard.css";
-import book from "../Icons/librarian.png";
-import users from "../Icons/authors.png";
-import category from "../Icons/researchers.png";
-import readers from "../Icons/societies.png";
+import book from "../Icons/book (1).png";
+import users from "../Icons/user (1).png";
+import category from "../Icons/menu.png";
+import readers from "../Icons/reader.png";
 import HocContainer from "../Components/HocContainer";
-import axiosInstance from '../api/axiosConfig';
+import { getCategoryCount } from "../api/service/category";
+import { getBookCount } from "../api/service/books";
 
 function Dashboard() {
   const [categoryCount, setCategoryCount] = useState(0);
@@ -16,7 +16,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchCategoryCount = async () => {
       try {
-        const response = await axiosInstance.get('/api/v1/categories/category-count');
+        const response = await getCategoryCount();
         setCategoryCount(response.data);
       } catch (error) {
         console.error("Error fetching category count:", error);
@@ -29,7 +29,7 @@ function Dashboard() {
   useEffect(()=>{
     const fetchBookCount = async ()=>{
       try{
-        const response = await axiosInstance.get('/api/v1/books/books-count');
+        const response = await getBookCount();
         setBookCount(response.data);
 
       }catch(error){
