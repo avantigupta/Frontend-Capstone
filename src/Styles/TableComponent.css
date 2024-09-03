@@ -14,13 +14,13 @@
   
   .table-component th,
   .table-component td {
-    padding: 12px 15px;
+    padding: 6px;
     text-align: center  ;
   }
   
   .table-component th {
-    background-color: #d1b3ff; 
-    color: #6a4e7e; 
+    background-color: #794787; 
+    color: #ffffff; 
     font-weight: bold;
     border-bottom: 2px solid #4b0082;
   }
@@ -32,11 +32,5 @@
   }
   
   .table-component tr:nth-child(even) td {
-    background-color: #f9f2ff; 
+    background-color: #fbf7ff; 
   }
-  
-  .table-component tr:hover td {
-    background-color: #e0ccff; 
-    cursor: pointer;
-  }
-  

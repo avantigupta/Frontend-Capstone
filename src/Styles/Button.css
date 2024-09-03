@@ -1,28 +1,19 @@
 .custom-button {
-  
     padding: 10px 20px;
     font-size: 16px;
     color: rgb(255, 255, 255);
     background-color: #794787;
     border: none;
     border-radius: 4px;
-
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
-
-
-  
-  .custom-button.login {
-    
+.custom-button.login {
     width: 50%;
+}
 
-
-  }
-
-  .custom-button.logout{
+.custom-button.logout{
     margin-top: 65%;
     margin-left: 30%;
-
 } 

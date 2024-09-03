@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import "../Styles/Dashboard.css";
 import book from "../Icons/book (1).png";
 import users from "../Icons/user (1).png";
-import category from "../Icons/menu.png";
+import house from "../Icons/house.png";
+import category from "../Icons/apps.png";
 import readers from "../Icons/reader.png";
+import takeaway from "../Icons/book (1).png"
 import HocContainer from "../Components/HocContainer";
-import { getCategoryCount } from "../api/service/category";
-import { getBookCount } from "../api/service/books";
+import { _get } from "../api/apiManager";
+
 
 function Dashboard() {
   const [categoryCount, setCategoryCount] = useState(0);
@@ -16,7 +18,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchCategoryCount = async () => {
       try {
-        const response = await getCategoryCount();
+        const response = await _get(`/api/categories/count`);
         setCategoryCount(response.data);
       } catch (error) {
         console.error("Error fetching category count:", error);
@@ -29,7 +31,7 @@ function Dashboard() {
   useEffect(()=>{
     const fetchBookCount = async ()=>{
       try{
-        const response = await getBookCount();
+        const response = await _get(`/api/books/count`);
         setBookCount(response.data);
 
       }catch(error){
@@ -69,11 +71,11 @@ function Dashboard() {
             <h3>{categoryCount} Categories</h3>
           </div>
           <div className="dashboard-card">
-            <img src={readers} alt="" className="dashboard-icons" />
+            <img src={house} alt="" className="dashboard-icons" />
             <h3>20 In House Users</h3>
           </div>
           <div className="dashboard-card">
-            <img src={readers} alt="" className="dashboard-icons" />
+            <img src={takeaway} alt="" className="dashboard-icons" />
             <h3>10 Takeaway Readers</h3>
           </div>
         </div>

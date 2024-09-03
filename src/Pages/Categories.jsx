@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { fetchCategories, addCategory, deleteCategory, updateCategory } from '../api/service/category';
 import HocContainer from "../Components/HocContainer";
 import "../Styles/categories.css";
 import Button from '../Components/Button';
+import {_get, _put, _post, _delete } from '../api/apiManager'
 import Modal from '../Components/modal';
-import TableComponent from '../Components/TableComponent';
+import Table from '../Components/Table';
 
 const Categories = () => {
     const [categories, setCategories] = useState([]);
@@ -13,13 +13,21 @@ const Categories = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingCategoryId, setEditingCategoryId] = useState(null);
     const [categoryName, setCategoryName] = useState(""); 
-    const [token, setToken] = useState("");
+    const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false); 
+    const [categoryToDelete, setCategoryToDelete] = useState(null); 
+    const [currentPage, setCurrentPage] = useState(0);  
+    const [totalPages, setTotalPages] = useState(0);  
 
     useEffect(() => {
         const getCategories = async () => {
             try {
-                const response = await fetchCategories();
-                setCategories(response.data);
+                const response = await _get(`/api/categories/list`, {
+                    page: currentPage,  
+                    size: 5
+                });
+                console.log(response);
+                setCategories(response.data.content);
+                setTotalPages(response.data.totalPages); 
             } catch (err) {
                 if (err.response && err.response.status === 401) {
                     setError('Unauthorized access. Please log in.');
@@ -30,14 +38,10 @@ const Categories = () => {
                 setLoading(false);
             }
         };
-
-        const authToken = localStorage.getItem('token');
-        console.log('Retrieved token:', authToken); 
-        setToken(authToken);
-
+    
         getCategories();
-    }, []);
-
+    }, [currentPage]);  
+    
     const handleOpenModal = (category = null) => {
         if (category) {
           setCategoryName(category.categoryName);
@@ -47,6 +51,7 @@ const Categories = () => {
           setEditingCategoryId(null);
         }
         
+        setIsDeleteConfirmation(false); 
         setModalOpen(true);
     };
 
@@ -55,39 +60,59 @@ const Categories = () => {
     };
 
     const handleSaveCategory = async () => {
-        const categoryData = { categoryName };
+        const categoryData = { id:editingCategoryId, categoryName:categoryName };
     
         try {
+          let result;
           if (editingCategoryId) {
-            await updateCategory(editingCategoryId, categoryData, token);
+            result = await _put(`/api/categories/update/${editingCategoryId}`,categoryData)
           } else {
-            await addCategory([categoryData], token);
+            result = await _post(`/api/categories/save`,[categoryData]);
           }
-    
+
           setCategoryName("");
           handleCloseModal();
-          const response = await fetchCategories();
+          const response = await _get(`/api/categories`);
           setCategories(response.data);
         } catch (error) {
-          console.error('Error saving category:', error);
           setError('Failed to save category');
         }
       };
+      
 
-    const handleDelete = async (id) => {
+      const handleDelete = async () => {
         try {
-            await deleteCategory(id, token); 
-            const response = await fetchCategories(); 
-            setCategories(response.data);
+            const response = await _delete(`/api/categories/delete/${categoryToDelete.id}`);
+            setCategoryToDelete(null);
+            handleCloseModal();
+            const updatedCategories = await _get(`/api/categories`);
+            setCategories(updatedCategories.data);
         } catch (error) {
-            console.error('Error deleting category:', error);
-            setError('Failed to delete category');
+            setError(`Failed to delete category: ${error.response?.data?.message || error.message}`);
         }
     };
+    
+    
+    const handleOpenDeleteModal = (category) => {
+        setCategoryToDelete(category);
+        setIsDeleteConfirmation(true);
+        setModalOpen(true);
+    };
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    
+    const handleNextPage = () => {
+        if (currentPage < totalPages - 1) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+    
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
-    if (categories.length === 0) return <div>No categories available.</div>;
 
     const columns = [
         { header: 'S.No', accessor: 'serialNumber' }, 
@@ -97,7 +122,7 @@ const Categories = () => {
             accessor: (category) => (
                 <>
                     <button className="edit-btn" onClick={() => handleOpenModal(category)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDelete(category.id)}>Delete</button>
+                    <button className="delete-btn" onClick={() => handleOpenDeleteModal(category)}>Delete</button>
                 </>
             )
         }
@@ -114,14 +139,43 @@ const Categories = () => {
             <Modal
                 isOpen={modalOpen}
                 onClose={handleCloseModal}
-                onSubmit={handleSaveCategory}
-                categoryName={categoryName}
-                setCategoryName={setCategoryName}
-                isEditing={!!editingCategoryId}
-            />
-            <TableComponent columns={columns} data={dataWithSerialNumbers} />
+                onSubmit={isDeleteConfirmation ? handleDelete : handleSaveCategory} 
+                title={editingCategoryId ? "Edit Category" : "Add Category"}
+                isDeleteConfirmation={isDeleteConfirmation}
+                deleteMessage={`Are you sure you want to delete this category ?`}
+            >
+                {
+                    !isDeleteConfirmation && (
+                        <>
+                          <input 
+                            type='text'
+                            placeholder='Category Name'
+                            value={categoryName}
+                            onChange={(e) => setCategoryName(e.target.value)}
+                          />
+                        </>
+                    )
+                }
+            </Modal>
+            {categories.length === 0 ? (
+                <div>No categories available.</div>
+            ) : (
+                <>
+                <Table columns={columns} data={dataWithSerialNumbers} />
+                <div className="pagination-controls">
+                    <button onClick={handlePreviousPage} disabled={currentPage === 0}>
+                        Previous
+                    </button>
+                    <span>Page {currentPage + 1} of {totalPages}</span>
+                    <button onClick={handleNextPage} disabled={currentPage >= totalPages - 1}>
+                        Next
+                    </button>
+                </div>
+                </>
+            )}
         </div>
     );
 };
 
 export default HocContainer(Categories, "Categories");
+

@@ -93,16 +93,17 @@
 
 
   .input-error {
-    border: 1px solid red;
+    border: 1px solid rgb(255, 0, 0);
   }
    
-
-
 .error-msg {
   color: red;
   font-size: 0.7em;
-  margin-bottom: 4px;
-  display:inline-block;
-  width: 100%; 
-  box-sizing: border-box; 
+  margin-top: 4px;
+}
+
+.welcome-msg{
+  position: absolute;
+  top: 10%;
+  left: 20%;
 }

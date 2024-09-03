@@ -1,8 +1,6 @@
-
-
 import React, { useState, useEffect } from 'react';
 import "../Styles/Login.css";
-import HeroSection from "../Assets/HeroSection.png";
+import hero_section from "../Assets/HeroSection.png";
 import Button from '../Components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -17,18 +15,19 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState(""); 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (token) {
       navigate('/dashboard');
     }
-  }, [token])
+  }, [token]);
 
   useEffect(() => {
     setPlaceholderText(role === "admin" ? "Email" : "Mobile Number");
+    setUsername("");
+    setPassword("");
+    setErrors({});
   }, [role]);
 
   const handleRoleChange = (event) => {
@@ -38,11 +37,17 @@ function Login() {
   const validateForm = () => {
     const newErrors = {};
     if (!username) {
-      newErrors.username = "This field is required";
+      newErrors.username = "Username is required";
+    } else if (role === "admin" && !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(username)) {
+      newErrors.username = "Enter a valid email address";
+    } else if (role === "user" && !/^\d{8,12}$/.test(username)) {
+      newErrors.username = "Enter a valid phone number";
     }
+    
     if (!password) {
-      newErrors.password = "Field is required";
+      newErrors.password = "Password is required";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,27 +55,29 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
     setErrorMessage(""); 
-
+  
     if (!validateForm()) return;
-
+  
+    const encryptedPassword = btoa(password);
+  
     const credentials = {
       usernameOrPhoneNumber: username,
-      password,
+      password: encryptedPassword,
     };
-
+  
     try {
       const data = await dispatch(loginUser(credentials)).unwrap();
       localStorage.setItem("token", data["jwtToken"]);
       navigate("/dashboard");
     } catch (error) {
-      if (error.Message === 'Bad credentials') {
+      if (error.message === 'Bad credentials') {
         setErrorMessage("Password and Username do not match");
       } else {
         setErrorMessage("An unexpected error occurred. Please try again.");
       }
     }
   };
-
+  
   return (
     <div className="container">
       <div className="login-container">
@@ -120,12 +127,11 @@ function Login() {
 
             <div><Button type="submit" className='login'>Login</Button></div>
 
-      
             {errorMessage && <span className="error-msg">{errorMessage}</span>}
           </form>
         </div>
         <div className='login-img'>
-          <img src={HeroSection} alt='img' />
+          <img src={hero_section} alt='img' />
         </div>
       </div>
     </div>

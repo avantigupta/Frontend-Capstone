@@ -30,3 +30,26 @@
   position: absolute;
   left: 81%;
 }
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+align-items: center;  
+width: 1000px;
+  gap: 20px;
+}
+
+.pagination-controls button {
+  padding: 10px 20px;
+  background-color: #794787;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
