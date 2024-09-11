@@ -27,14 +27,16 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
-        if (error.response && error.response.status === 401) {
-            console.error('Unauthorized access. Please check your token.');
-        } else {
-            console.error('Response error:', error);
-        }
+        if (error?.response && error?.response?.status === 401) {
+            window.localStorage.clear();
+            if (!localStorage.getItem('token')) {
+                window.location.href = '/'; 
+            }
+        } 
         return Promise.reject(error);
     }
 );
+
 
 export default axiosInstance;
 

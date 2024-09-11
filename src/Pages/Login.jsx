@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import "../Styles/Login.css";
+import "../styles/Login.css";
 import hero_section from "../Assets/HeroSection.png";
-import Button from '../Components/Button';
+import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { loginUser } from '../redux/auth/authActions';
+import { validateForm } from '../utils/formValidation';
+import Toast from "../components/Toast";
+import {fetch_post} from '../api/apiManager'
 
 function Login() {
   const [role, setRole] = useState("admin");
@@ -13,15 +14,20 @@ function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState(""); 
+  const [toastMessage, setToastMessage] = useState(null);
+  const [toastType, setToastType] = useState('success');
+  const [isToastVisible, setIsToastVisible] = useState(false);
+
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (token) {
       navigate('/dashboard');
+    } else {
+      navigate('/');
     }
-  }, [token]);
+  }, [token, navigate]);
 
   useEffect(() => {
     setPlaceholderText(role === "admin" ? "Email" : "Mobile Number");
@@ -30,58 +36,103 @@ function Login() {
     setErrors({});
   }, [role]);
 
+  const showToast = (message, type = 'success') => {
+    setToastMessage(message);
+    setToastType(type); 
+    setIsToastVisible(true);
+  };
+
+  useEffect(() => {
+    if (isToastVisible) {
+      const timer = setTimeout(() => {
+        setIsToastVisible(false);
+        setToastMessage(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isToastVisible]);
+
   const handleRoleChange = (event) => {
     setRole(event.target.value);
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!username) {
-      newErrors.username = "Username is required";
-    } else if (role === "admin" && !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(username)) {
-      newErrors.username = "Enter a valid email address";
-    } else if (role === "user" && !/^\d{8,12}$/.test(username)) {
-      newErrors.username = "Enter a valid phone number";
-    }
-    
-    if (!password) {
-      newErrors.password = "Password is required";
-    }
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, username: "" }));
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+  };
+
+  const validateAndSetErrors = () => {
+    const formData = {
+      username,
+      password,
+      role,
+    };
+  
+    const newErrors = validateForm(formData);
+    console.log(formData)
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleLogin = async (event) => {
     event.preventDefault();
     setErrorMessage(""); 
   
-    if (!validateForm()) return;
+   if (!validateAndSetErrors()) return;
   
     const encryptedPassword = btoa(password);
-  
     const credentials = {
       usernameOrPhoneNumber: username,
       password: encryptedPassword,
     };
   
     try {
-      const data = await dispatch(loginUser(credentials)).unwrap();
-      localStorage.setItem("token", data["jwtToken"]);
-      navigate("/dashboard");
-    } catch (error) {
-      if (error.message === 'Bad credentials') {
-        setErrorMessage("Password and Username do not match");
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
+      const response = await fetch_post(`api/users/signin`, credentials);
+      console.log(response)
+  
+      if (response && response.data) {
+        localStorage.setItem("token", response.data.jwtToken);
+        localStorage.setItem("role", role); 
+        localStorage.setItem('id',response.data.userId)
+        localStorage.setItem('username',response.data.name)
+        
+        if(role==='admin'){
+        navigate('/dashboard')
+        showToast("Logged in successfully!", 'success');
+
+        }
+      else{
+
+      navigate('/userPage')
+      showToast("Logged in successfully!", 'success');
+
       }
+      } else {
+        showToast("Failed to login, Please try again later!", 'error');
+      }
+    } catch (error) {
+      setErrorMessage("Bad credentials")
     }
   };
-  
+
   return (
     <div className="container">
       <div className="login-container">
         <div className="login-content">
+          {isToastVisible && (
+            <Toast
+              message={toastMessage}
+              type={toastType}
+              onClose={() => setIsToastVisible(false)}
+            />
+          )}
           <form onSubmit={handleLogin}>
             <div className='radio-group'>
               <label>
@@ -108,26 +159,30 @@ function Login() {
               </label>
             </div>
             <input 
-              type="text" 
+              type={role === "admin" ? "text" : "number"} 
               placeholder={placeholderText} 
-              className={`login-input ${errors.username && 'input-error'}`}
+              className={`login-input ${errors.username ? 'input-error' : ''}`}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
             />
-            {errors.username && <span className="error-msg">{errors.username}</span>}
+            
+            {errors.username && <div className="error-msg">{errors.username}</div>}
 
             <input 
               type="password" 
               placeholder="Password" 
-              className={`login-input ${errors.password && 'input-error'}`} 
+              className={`login-input ${errors.password ? 'input-error' : ''}`} 
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
             />
+            <br />
             {errors.password && <span className="error-msg">{errors.password}</span>}
+            
+            <div className='login-btn'>
+              <Button type="submit" className='login'>Login</Button>
+            </div>
 
-            <div><Button type="submit" className='login'>Login</Button></div>
-
-            {errorMessage && <span className="error-msg">{errorMessage}</span>}
+            {errorMessage && <div className="error-msg">{errorMessage}</div>}
           </form>
         </div>
         <div className='login-img'>

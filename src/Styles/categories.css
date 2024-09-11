@@ -1,19 +1,25 @@
 
 .category-page {
-  padding: 50px;
+  padding: 2%;
 }
-
-.edit-btn, .delete-btn {
+.category-content{
+  display: flex;
+  flex-direction:row;
+}
+.edit-btn, .delete-btn, .assign-btn{
   background-color: #9176c5;
-  color: white;
-  border: none;
-  padding: 8px 12px;
+  padding: 4px 8px;
   border-radius: 5px;
   cursor: pointer;
   margin-right: 5px;
   transition: background-color 0.3s;
 }
-
+.assign-btn{
+  background-color: rgb(43, 139, 43)
+}
+.assign-btn:hover{
+  background-color: rgb(47, 109, 47);
+}
 .edit-btn:hover, .delete-btn:hover {
   background-color: #8057af; 
 }
@@ -28,15 +34,14 @@
 
 .add-category{
   position: absolute;
-  left: 81%;
+  left: 80%;
 }
 
 .pagination-controls {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-align-items: center;  
-width: 1000px;
+  align-items: center;  
+  width: 1000px;
   gap: 20px;
 }
 
@@ -53,3 +58,44 @@ width: 1000px;
   background-color: #ccc;
   cursor: not-allowed;
 }
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  
+  .category-page {
+    padding: 20px;
+    position: relative;
+    overflow-x: auto;
+}
+
+.category-content {
+    gap: 20px;
+}
+
+.search-bar {
+    left: 20%;
+    top: 25%;
+}
+
+.edit-btn, .delete-btn, .assign-btn {
+    margin-bottom: 5px;
+}
+
+.add-category {
+    margin-top: 10px;
+    left: 72%;
+}
+
+.pagination-controls {
+    width: 100%;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+} 

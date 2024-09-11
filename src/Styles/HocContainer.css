@@ -6,3 +6,8 @@
 .dashboard-hoc-right-container{
     border-radius: 5px;
 }
+
+.dashboard-hoc-full-container {
+    width: 100%;
+    padding: 20px;
+  }

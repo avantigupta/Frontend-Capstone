@@ -1,25 +1,31 @@
 import React from "react";
-import "../Styles/Header.css";
-import profile from "../Icons/profile.png"
+import "../styles/Header.css";
+import profile from "../Assets/Icons/profile.png";
 import logo from "../Assets/online-library.png";
+import { useEffect, useState } from "react";
+
 function Header({ title }) {
+  const [role, setRole] = useState(""); 
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role"); 
+    if (storedRole) {
+      setRole(storedRole); 
+    }
+  }, []);
   return (
     <div className="header-wrapper">
       <div className="logo-div">
-      <img src={logo} alt="logo" className="logo-img"/>
-<span className="logo-name">BookNest</span>
+        <img src={logo} alt="logo" className="logo-img" />
+        <span className="logo-name">BookNest</span>
       </div>
-      
+
       <h1 className="header-title">{title}</h1>
       <div className="header-right-section">
         <div className="header-profile-section">
-          <img
-            src={profile}
-            alt="Profile"
-            className="header-profile-img"
-          />
+          <img src={profile} alt="Profile" className="header-profile-img" />
 
-          <span className="header-profile-name">Admin</span>
+          <span className="header-profile-name">Hi {role}</span>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
  body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: rgb(255, 255, 255);
     margin: 0;
     padding: 0;
@@ -13,22 +13,27 @@
     height: 100vh;
 
   }
-  
+  .login-container input[type="number"]::-webkit-inner-spin-button,
+.login-container input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
   .login-container {
-    display: flex;
-    justify-content: space-between;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
     position: relative;
-    height: 80%;
+    height: 70%;
+    align-items: center;
+    padding-left: 3%;
+    display: grid;
+    grid-template-columns: 50% 50%;
   } 
 
    .radio-group {
     display: flex;
     gap: 35px;
     justify-content: center;
-    margin-bottom: 20px;
   } 
   .radio-input {
     margin-right: 10px;
@@ -42,10 +47,9 @@
   } 
    .login-content {
     text-align: center;
-    width: 400px;
-    padding: 5%;
-    display: flex;
+    width: 90%;
     align-items: center;
+    
   }
   
    
@@ -59,7 +63,7 @@
   }
   
   .login-input {
-    margin-bottom: 25px;
+    margin-top: 25px;
     padding: 15px;
     background-color: #F7F1F7;
     border: none;
@@ -86,24 +90,31 @@
   .login-img img {
     width: 100%;
     max-width: 500px; 
-    height: auto;
-    object-fit: cover;
+  
   }
   
 
 
   .input-error {
-    border: 1px solid rgb(255, 0, 0);
+    border: 1px solid rgb(255, 21, 21);
   }
    
-.error-msg {
-  color: red;
-  font-size: 0.7em;
-  margin-top: 4px;
-}
+  .error-msg {
+    color: red;
+    font-size: 0.7em;
+    margin-top: 1%;
+  }
 
-.welcome-msg{
-  position: absolute;
-  top: 10%;
-  left: 20%;
+  .login-btn{
+    margin-top: 10%;
+  }
+
+
+  @media screen and (max-width: 768px) {
+    .login-container {
+      height: 340px;
+      max-width: 600px;
+    }
+
+   
 }

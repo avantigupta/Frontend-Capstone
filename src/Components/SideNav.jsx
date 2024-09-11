@@ -1,23 +1,24 @@
 import React from 'react';
-import '../Styles/SideNav.css'; 
+import '../styles/SideNav.css'; 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { logout } from '../redux/auth/authActions'; 
-import dashboardIcon from "../Icons/dashboard.png";
-import booksIcon from "../Icons/book.png";
-import issuancesIcon from "../Icons/library.png";
-import usersIcon from "../Icons/user.png";
-import categoryIcon from "../Icons/menu.png";
+import dashboardIcon from "../Assets/Icons/dashboard.png";
+import booksIcon from "../Assets/Icons/book.png";
+import issuancesIcon from "../Assets/Icons/library.png";
+import usersIcon from "../Assets/Icons/user.png";
+import categoryIcon from "../Assets/Icons/menu.png";
 import Button from './Button';
 
+
 function SideNav() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleLogout = () => {
-  localStorage.removeItem("token")
-  navigate("/")
+    localStorage.removeItem("token");
+    localStorage.removeItem("id");
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
+    navigate("/")
   };
 
   return (
@@ -38,7 +39,7 @@ function SideNav() {
             className={location.pathname === "/categories" ? "active" : ""}
           >
             <img src={categoryIcon} alt="Categories" className="icon" />
-            Categories       
+            Category       
           </Link>
         </li>
         <li>

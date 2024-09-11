@@ -1,0 +1,31 @@
+.toast {
+  position: fixed;
+  top: 30px;
+  right: 25px;
+  padding: 8px;
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.toast p {
+  margin: 0;
+
+}
+
+.toast button {
+  float: right;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+} 
+ 
+.toast.success {
+  background-color: green; 
+}
+
+.toast.error {
+  background-color: red; 
+}
+

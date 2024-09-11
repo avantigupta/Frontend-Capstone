@@ -1,7 +1,43 @@
-
-.edit-user {
+.users-content{
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    gap: 59%;
 }
 
+.users-page{
+    padding: 2%;
+}
+
+@media only screen and (max-width: 768px){
+
+    .users-content {
+        gap: 34%;
+    }
+    .add-user{
+        margin-top: 10px ;
+        right: 5%;
+        position: absolute;
+    }
+    .users-page {
+        position: relative;
+        font-size: 15px;
+        padding: 20px; 
+        overflow-x: auto; 
+    }
+    
+    .table-container {
+        width: 150%; 
+        padding: 15px;
+        margin-left: 7%;
+    }
+    .table-component {
+        overflow-x: auto;
+    }
+    
+    .table-component th,
+    .table-component td {
+        padding: 8px 10px; 
+    }
+
+
+}

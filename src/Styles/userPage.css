@@ -1,0 +1,21 @@
+.user-history{
+    position: absolute;
+    left: 45%;
+    top: 50%;
+}
+
+.heading-user{
+    padding-left: 3.5%;
+    margin-top: 15px;
+} 
+
+.custom-table{
+    width: 10%;
+}
+
+.btn-history{
+    position: absolute;
+    top: 10%;
+    right: 8%;
+}
+

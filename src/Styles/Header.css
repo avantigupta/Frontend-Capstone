@@ -1,18 +1,17 @@
-
 .header-wrapper {
     display: flex;
+    background-color: #ebe2ed;
     justify-content:space-between;
     align-items: center;
     padding-left: 15px;
-    border-bottom: 1px solid rgb(0, 0, 0);
+    border-bottom: 1px solid #c28cd1;
     box-shadow: 3px 0 5px rgba(0, 0, 0, 0.3);
   }
   
   .header-title {
-    font-size: 28px;
-    font-weight: bold;
-    color: #000000;
-padding-right:54.1% ;
+    font-size: 25px;
+    color: #6621BA;
+    padding-right:54.1% ;
 
   }
   
@@ -29,7 +28,7 @@ padding-right:54.1% ;
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    border: 1px solid rgb(191, 191, 191);
+    border: 1px solid rgb(153, 153, 153);
 
   }
   
@@ -38,7 +37,8 @@ padding-right:54.1% ;
   .header-profile-name {
     display: none;
     position: absolute;
-    top: 12%;
+    top: 11%;
+    right: 1%;
     background-color: #F1EAF3; 
     color: purple;
     padding: 10px;
@@ -46,6 +46,7 @@ padding-right:54.1% ;
     border-radius: 5px;
     font-size: 15px;
     white-space: nowrap;
+    border: 1px solid rgb(208, 202, 202);
   }
   
   .header-profile-section:hover .header-profile-name {
@@ -70,4 +71,20 @@ color: #6621BA;
 .logo-img{
   width: 40px;
   height: 40px;
+}
+
+@media only screen and (max-width: 768px) {
+  .header-wrapper {
+      padding: 10px; /* Adjust padding for smaller screens */
+  }
+
+  .header-title {
+      padding-right: 40%; /* Remove padding on smaller screens */
+  }
+  .logo-div{
+    
+    padding-left: 0.5%;
+    
+      }
+
 }

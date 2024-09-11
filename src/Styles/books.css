@@ -1,12 +1,52 @@
 .add-book{
     position: absolute;
-    left: 83%;
+    left: 85%;
     
   }
 
-  .book-page{
-    padding: 60px;
+.book-page{
+    padding: 2%;
 
   }
 
-  
+.no-books-found{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.book-content{
+    display: flex;
+    flex-direction: row;
+}
+
+.username-mobile{
+color: rgb(47, 130, 47);
+
+}
+
+.error-books{
+  color: red;
+}
+
+@media only screen and (max-width: 768px) {
+  .add-book {
+      margin-top: 10px;
+      left: 77%; 
+  }
+
+  .book-page {
+      padding: 20px;
+      position: relative;
+      overflow-x: auto;
+    }
+
+  .no-books-found {
+      position: static; 
+      text-align: center; 
+  }
+
+  .book-content {
+      gap: 20px;
+  }
+}

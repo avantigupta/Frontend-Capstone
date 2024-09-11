@@ -1,46 +1,45 @@
 import React, { useState, useEffect } from "react";
-import "../Styles/Dashboard.css";
-import book from "../Icons/book (1).png";
-import users from "../Icons/user (1).png";
-import house from "../Icons/house.png";
-import category from "../Icons/apps.png";
-import readers from "../Icons/reader.png";
-import takeaway from "../Icons/book (1).png"
-import HocContainer from "../Components/HocContainer";
-import { _get } from "../api/apiManager";
-
+import "../styles/Dashboard.css";
+import book from "../Assets/Icons/book (1).png";
+import users from "../Assets/Icons/user (1).png";
+import takeawayReaders from "../Assets/Icons/open-book.png";
+import house from "../Assets/Icons/house.png";
+import category from "../Assets/Icons/apps.png";
+import readers from "../Assets/Icons/reader.png";
+import HocContainer from "../components/HocContainer";
+import { fetch_get} from "../api/apiManager";
+import Card from "../components/Card";
 
 function Dashboard() {
-  const [categoryCount, setCategoryCount] = useState(0);
-  const [bookCount, setBookCount] = useState(0);
-  
-  
+  const [counts, setCounts] = useState({
+    bookCount: 0,
+    categoryCount: 0,
+    userCount: 0,
+    activeUserCount: 0,
+    inHouseCount: 0,
+    takeawayCount: 0
+  });
+
   useEffect(() => {
-    const fetchCategoryCount = async () => {
+    const fetchCounts = async () => {
       try {
-        const response = await _get(`/api/categories/count`);
-        setCategoryCount(response.data);
+        const response = await fetch_get('/api/books/count/all');
+        const { bookCount, categoryCount, userCount, issuanceCountByType, activeUserCount } = response.data;
+
+        setCounts({
+          bookCount,
+          categoryCount,
+          userCount,
+          activeUserCount,
+          inHouseCount: issuanceCountByType['InHouse'] || 0,
+          takeawayCount: issuanceCountByType['Takeaway'] || 0
+        });
       } catch (error) {
-        console.error("Error fetching category count:", error);
+        console.error("Error fetching counts", error);
       }
     };
-
-    fetchCategoryCount();
+    fetchCounts();
   }, []);
-
-  useEffect(()=>{
-    const fetchBookCount = async ()=>{
-      try{
-        const response = await _get(`/api/books/count`);
-        setBookCount(response.data);
-
-      }catch(error){
-        console.log("error fetching book count:", error);
-      }
-    };
-    fetchBookCount();
-  }, []);
-
 
   return (
     <div className="dashboard-wrapper">
@@ -51,33 +50,15 @@ function Dashboard() {
         </div>
       </div>
       <div className="dashboard-container">
-        <div className="card-row">
-          <div className="dashboard-card">
-            <img src={book} alt="" className="dashboard-icons" />
-            <h3>{bookCount} Total books</h3>
-          </div>
-          <div className="dashboard-card">
-            <img src={users} alt="" className="dashboard-icons" />
-            <h3>100+ Users</h3>
-          </div>
-          <div className="dashboard-card">
-            <img src={readers} alt="" className="dashboard-icons" />
-            <h3>50 Active Readers</h3>
-          </div>
+      <div className="card-row">
+          <Card icon={book} count={counts.bookCount} label="Total Books" />
+          <Card icon={users} count={counts.userCount} label="Users" />
+          <Card icon={category} count={counts.categoryCount} label="Categories" />
         </div>
         <div className="card-row">
-          <div className="dashboard-card">
-            <img src={category} alt="" className="dashboard-icons" />
-            <h3>{categoryCount} Categories</h3>
-          </div>
-          <div className="dashboard-card">
-            <img src={house} alt="" className="dashboard-icons" />
-            <h3>20 In House Users</h3>
-          </div>
-          <div className="dashboard-card">
-            <img src={takeaway} alt="" className="dashboard-icons" />
-            <h3>10 Takeaway Readers</h3>
-          </div>
+          <Card icon={readers} count={counts.activeUserCount} label="Issued Books" />
+          <Card icon={house} count={counts.inHouseCount} label="In-House Users" />
+          <Card icon={takeawayReaders} count={counts.takeawayCount} label="Takeaway Readers" />
         </div>
       </div>
     </div>
