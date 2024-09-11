@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { fetch_get, fetch_delete, fetch_patch } from '../../api/apiManager';
-import Toast from '../Toast';
+import Toast from '../toast';
 import Modal from '../modal';
-import Table from '../Table';
-import HocContainer from '../HocContainer';
+import Table from '../table';
+import HocContainer from '../hocContainer';
 import SearchBox from '../searchBox';
 import '../../styles/issuances.css'
-import Button from '../Button';
+import Button from '../button';
+import Loader from '../loader';
+
 const Issuances = () => {
     const [toastMessage, setToastMessage] = useState(null);
     const [toastType, setToastType] = useState('success');
     const [issuances, setIssuances] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [editingIssuance, setEditingIssuance] = useState(null);
     const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
@@ -22,9 +23,7 @@ const Issuances = () => {
     const [searchQuery, setSearchQuery] = useState(''); 
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     
-  
-   
-  useEffect(() => {
+   useEffect(() => {
     const handler = setTimeout(() => {
       const trimmedQuery = searchQuery.trim(); 
       if (trimmedQuery.length >= 3 || trimmedQuery === "") {
@@ -38,10 +37,14 @@ const Issuances = () => {
     };
   }, [searchQuery]);
   
-    useEffect(() => {
-        const getIssuances = async () => {
+    useEffect(()=>{
+    getIssuances();
+   },[currentPage, debouncedSearchQuery])
+
+    const getIssuances = async () => {
+        setLoading(true)
             try {
-                const response = await fetch_get(`/api/v1/issuances/list`, {
+                const response = await fetch_get(`/api/issuances/list`, {
                     page: currentPage,  
                     size: 5,
                     search: debouncedSearchQuery
@@ -55,8 +58,6 @@ const Issuances = () => {
             }
         };
 
-        getIssuances();
-    }, [currentPage, debouncedSearchQuery]);
 
     const showToast = (message, type = 'success') => {
         setToastMessage(message);
@@ -93,6 +94,7 @@ const Issuances = () => {
     };
 
     const handleSaveIssuance = async () => {
+        setLoading(true)
         try {
             const formattedIssuance = {
                 ...editingIssuance,
@@ -100,12 +102,12 @@ const Issuances = () => {
                 returnedAt: convertToIST(editingIssuance.returnedAt),
             };
             if (editingIssuance.id) {
-                const result = await fetch_patch(`/api/v1/issuances/update/${editingIssuance.id}`, formattedIssuance);
+                const result = await fetch_patch(`/api/issuances/update/${editingIssuance.id}`, formattedIssuance);
                 showToast(result.data.message);
 
             } 
             handleCloseModal();
-            const response = await fetch_get(`/api/v1/issuances/list`, {
+            const response = await fetch_get(`/api/issuances/list`, {
                 page: currentPage,
                 size: 5,
                 search: debouncedSearchQuery
@@ -114,14 +116,19 @@ const Issuances = () => {
         } catch (error) {
             showToast("Failed to update issuance", 'error'); 
         }
+        finally{
+            setLoading(false);
+        }
     };
 
     const handleDelete = async () => {
+        setLoading(true);
+
         try {
-            const result = await fetch_delete(`/api/v1/issuances/delete/${issuanceToDelete.id}`);
+            const result = await fetch_delete(`/api/issuances/delete/${issuanceToDelete.id}`);
             setIssuanceToDelete(null);
             handleCloseModal();
-            const updatedIssuances = await fetch_get(`/api/v1/issuances/list`, {
+            const updatedIssuances = await fetch_get(`/api/issuances/list`, {
                 page: currentPage,
                 size: 5,
                 search: debouncedSearchQuery
@@ -132,6 +139,8 @@ const Issuances = () => {
         } catch (error) {
             handleCloseModal();
             showToast("Failed to delete issuance",'error'); 
+        }finally{
+            setLoading(false)
         }
     };
 
@@ -166,12 +175,9 @@ const Issuances = () => {
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
     
-        return `${year}-${month}-${day}T${hours}:${minutes}`; // Return in YYYY-MM-DDTHH:MM format
+        return `${year}-${month}-${day}T${hours}:${minutes}`; 
     };
     
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-
     const convertToIST = (dateTime) => {
         if (!dateTime) return '';
     
@@ -299,7 +305,10 @@ const Issuances = () => {
                     </div>
                 )}
             </Modal>
-            {issuances.length === 0 ? (
+            
+      {loading ? (
+        <Loader />
+      ): issuances.length === 0 ? (
         <div className="no-books-found">Issuance not available</div>
       ) : (
         <>
@@ -314,8 +323,8 @@ const Issuances = () => {
                     Next
                 </button>
             </div>
-    </>
-      )}
+         </>
+        )}
         </div>
     
     );

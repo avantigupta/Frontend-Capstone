@@ -1,5 +1,5 @@
 import React from 'react'
-import Issuance from '../components/Issuance/Issuance'
+import Issuance from '../components/issuance/issuance'
 
 function Issuances() {
   return (

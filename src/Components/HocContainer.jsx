@@ -1,7 +1,7 @@
 import React from "react";
-import SideNav from "./SideNav";
-import Header from "./Header";
-import "../styles/HocContainer.css";
+import SideNav from "./sideNav";
+import Header from "./header";
+import "../styles/hocContainer.css";
 
 const HocContainer = (Component, title, showSideNav=true ) =>
   function HOC() {

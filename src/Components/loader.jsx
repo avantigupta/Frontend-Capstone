@@ -1,4 +1,4 @@
-import load from "../Assets/Icons/loader.gif"
+import load from "../assets/icons/loader.gif"
 import '../styles/loader.css'
 const Loader = () => {
     return (

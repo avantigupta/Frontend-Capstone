@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "../styles/modal.css";
-import Button from "./Button";
+import Button from "./button";
 
 const Modal = ({
   isOpen,

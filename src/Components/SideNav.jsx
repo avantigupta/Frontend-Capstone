@@ -1,12 +1,12 @@
 import React from 'react';
-import '../styles/SideNav.css'; 
+import '../styles/sideNav.css'; 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import dashboardIcon from "../Assets/Icons/dashboard.png";
-import booksIcon from "../Assets/Icons/book.png";
-import issuancesIcon from "../Assets/Icons/library.png";
-import usersIcon from "../Assets/Icons/user.png";
-import categoryIcon from "../Assets/Icons/menu.png";
-import Button from './Button';
+import dashboardIcon from "../assets/icons/dashboard.png";
+import booksIcon from "../assets/icons/book.png";
+import issuancesIcon from "../assets/icons/library.png";
+import usersIcon from "../assets/icons/user.png";
+import categoryIcon from "../assets/icons/menu.png";
+import Button from './button';
 
 
 function SideNav() {
@@ -14,10 +14,7 @@ function SideNav() {
   const location = useLocation();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("id");
-    localStorage.removeItem("username");
-    localStorage.removeItem("role");
+    localStorage.clear();
     navigate("/")
   };
 

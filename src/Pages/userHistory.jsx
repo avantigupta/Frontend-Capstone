@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; 
 import { fetch_get } from '../api/apiManager'; 
-import HocContainer from '../components/HocContainer';
-import Table from '../components/Table'; 
-import arrow from "../Assets/Icons/arrow.png";
+import HocContainer from '../components/hocContainer';
+import Table from '../components/table'; 
+import arrow from "../assets/icons/arrow.png";
 
 const UserHistory = () => {
     const { userId } = useParams();  

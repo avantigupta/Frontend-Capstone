@@ -1,5 +1,5 @@
 import React from "react";
-import User from "../components/User/User";
+import User from "../components/user/user";
 function Users() {
   return (
     <div>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import HocContainer from "../HocContainer";
+import hocContainer from "../hocContainer";
 import "../../styles/books.css";
-import Button from "../Button";
+import Button from "../button";
 import Modal from "../modal";
-import Table from "../Table";
+import Table from "../table";
 import SearchBox from "../searchBox";
 import {
   fetch_delete,
@@ -11,11 +11,11 @@ import {
   fetch_put,
   fetch_post,
 } from "../../api/apiManager";
-import Toast from "../Toast";
-import Dropdown from "../Dropdown";
+import Toast from "../toast";
+import Dropdown from "../dropdown";
 import { useNavigate } from "react-router-dom";
 import Loader from "../loader";
-import ActionIcon from "../../Assets/Icons/more.png";
+import ActionIcon from "../../assets/icons/more.png";
 
 const Books = () => {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const Books = () => {
       const trimmedQuery = searchQuery.trim();
       setDebouncedSearchQuery(trimmedQuery);
       setCurrentPage(0); 
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(handler);
   }, [searchQuery]);
@@ -96,7 +96,7 @@ const Books = () => {
 
     if (mobile.length === 10) {
       try {
-        const userResponse = await fetch_get(`/api/v1/users/number/${mobile}`);
+        const userResponse = await fetch_get(`/api/users/number/${mobile}`);
         const userName = userResponse.data.name;
         setUserName(userName);
         setIssueError(""); 
@@ -110,20 +110,20 @@ const Books = () => {
     }
 };
 
-useEffect(() => {
-  const handler = setTimeout(() => {
-    const trimmedQuery = searchQuery.trim(); 
+// useEffect(() => {
+//   const handler = setTimeout(() => {
+//     const trimmedQuery = searchQuery.trim(); 
 
-    if (trimmedQuery.length >= 3 || trimmedQuery === "") {
-      setDebouncedSearchQuery(trimmedQuery); 
-      setCurrentPage(0);
-    }
-  }, 1000);
+//     if (trimmedQuery.length >= 3 || trimmedQuery === "") {
+//       setDebouncedSearchQuery(trimmedQuery); 
+//       setCurrentPage(0);
+//     }
+//   }, 1000);
 
-  return () => {
-    clearTimeout(handler);
-  };
-}, [searchQuery]);
+//   return () => {
+//     clearTimeout(handler);
+//   };
+// }, [searchQuery]);
 
 
   const handleHistoryModal = (book) => {
@@ -135,30 +135,27 @@ useEffect(() => {
     setHistoryData([]);
   };
 
-  useEffect(() => {
-    const getBooks = async () => {
-      try {
-        const [booksResponse, categoriesResponse] = await Promise.all([
-          fetch_get("/api/books/list", {
-            page: currentPage,
-            size: 5,
-            search: debouncedSearchQuery,
-          }),
-          fetch_get("/api/categories"),
-        ]);
+  // const getBooks = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const [booksResponse, categoriesResponse] = await Promise.all([
+  //         fetch_get("/api/books/list", {
+  //           page: currentPage,
+  //           size: 8,
+  //           search: debouncedSearchQuery,
+  //         }),
+  //         fetch_get("/api/categories"),
+  //       ]);
 
-        setBooks(booksResponse.data.content);
-        setTotalPages(booksResponse.data.totalPages);
-        setCategories(categoriesResponse.data);
-      } catch (err) {
-        showToast("Failed to load books, try again later!", "error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getBooks();
-  }, [currentPage, debouncedSearchQuery]);
+  //       setBooks(booksResponse.data.content);
+  //       setTotalPages(booksResponse.data.totalPages);
+  //       setCategories(categoriesResponse.data);
+  //     } catch (err) {
+  //       showToast("Failed to load books, try again later!", "error");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  // };
 
   const showToast = (message, type = "success") => {
     setToastMessage(message);
@@ -210,7 +207,7 @@ useEffect(() => {
       quantity: quantity,
       categoryId: categoryForBook,
     };
-  
+    setLoading(true)
     try {
       let result;
       if (editingBookId) {
@@ -235,10 +232,13 @@ useEffect(() => {
       setBooks(response.data.content);
     } catch (error) {
       setIssueError(error.response.data.message)
+    }finally{
+      setLoading(false);
     }
   };
   
   const handleDelete = async () => {
+    setLoading(true);
     try {
       const result = await fetch_delete(`/api/books/delete/${bookToDelete.id}`);
       setBookToDelete(null);
@@ -253,6 +253,8 @@ useEffect(() => {
     } catch (error) {
       handleCloseModal();
       showToast(error.response.data.message, "error")
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -294,7 +296,7 @@ useEffect(() => {
     }
   
     try {
-      const userResponse = await fetch_get(`/api/v1/users/number/${mobileNumber}`);
+      const userResponse = await fetch_get(`/api/users/number/${mobileNumber}`);
       const userId = userResponse.data.id;
   
       const issuanceData = {
@@ -306,7 +308,7 @@ useEffect(() => {
         status: status,
       };
   
-      const result = await fetch_post("/api/v1/issuances/save", issuanceData);
+      const result = await fetch_post("/api/issuances/save", issuanceData);
   
       setSelectedBook("");
       setMobileNumber("");
@@ -350,7 +352,6 @@ useEffect(() => {
       return now.toISOString().slice(0, 16); 
   };
   
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   const columns = [
@@ -393,6 +394,7 @@ useEffect(() => {
   return (
     <div className="book-page">
       <div className="book-content">
+        
         {toastMessage && (
           <Toast
             message={toastMessage}
@@ -559,7 +561,9 @@ useEffect(() => {
         )}
       </Modal>
 
-      {books.length === 0 ? (
+      {loading ? (
+        <Loader />
+      ): books.length === 0 ? (
         <div className="no-books-found">No books available</div>
       ) : (
         <>
@@ -585,4 +589,4 @@ useEffect(() => {
   );
 };
 
-export default HocContainer(Books, "Books");
+export default hocContainer(Books, "Books");

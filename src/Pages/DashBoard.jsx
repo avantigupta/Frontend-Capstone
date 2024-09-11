@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "../styles/Dashboard.css";
-import book from "../Assets/Icons/book (1).png";
-import users from "../Assets/Icons/user (1).png";
-import takeawayReaders from "../Assets/Icons/open-book.png";
-import house from "../Assets/Icons/house.png";
-import category from "../Assets/Icons/apps.png";
-import readers from "../Assets/Icons/reader.png";
-import HocContainer from "../components/HocContainer";
+import "../styles/dashboard.css";
+import book from "../assets/icons/book (1).png";
+import users from "../assets/icons/user (1).png";
+import takeawayReaders from "../assets/icons/open-book.png";
+import house from "../assets/icons/house.png";
+import category from "../assets/icons/apps.png";
+import readers from "../assets/icons/reader.png";
+import HocContainer from "../components/hocContainer";
 import { fetch_get} from "../api/apiManager";
-import Card from "../components/Card";
+import Card from "../components/card";
 
 function Dashboard() {
   const [counts, setCounts] = useState({

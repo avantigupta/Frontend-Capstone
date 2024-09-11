@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import HocContainer from "../HocContainer";
-import Button from '../Button';
+import HocContainer from "../hocContainer";
+import Button from '../button';
 import { fetch_get,fetch_delete,fetch_patch,fetch_post, fetch_put} from '../../api/apiManager';
 import Modal from '../modal'; 
 import { useNavigate } from 'react-router-dom';
-import Table from '../Table';
-import Dropdown from '../Dropdown';
+import Table from '../table';
+import Dropdown from '../dropdown';
 import '../../styles/users.css';
 import SearchBox from '../searchBox';
-import Toast from "../Toast";
-import ActionIcon from "../../Assets/Icons/more.png";
+import Toast from "../toast";
+import ActionIcon from "../../assets/icons/more.png";
+import Loader from '../loader';
 
 const Users = () => {
+    const userRole = "USER";
     const [toastMessage, setToastMessage] = useState(null);
     const [toastType, setToastType] = useState('success');
-   
-    const userRole = "USER";
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);  
@@ -38,8 +38,9 @@ const Users = () => {
     const [searchQuery, setSearchQuery] = useState(''); 
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   
-    
-  useEffect(() => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
     const handler = setTimeout(() => {
       const trimmedQuery = searchQuery.trim(); 
         if (trimmedQuery.length >= 3 || trimmedQuery === "") {
@@ -50,16 +51,17 @@ const Users = () => {
   
     return () => {
       clearTimeout(handler);
-    };
-  }, [searchQuery]);
+        };
+    }, [searchQuery]);
   
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const getUsers = async () => {
+    useEffect(()=>{
+        getUsers();
+    },[currentPage, debouncedSearchQuery])
+    
+    const getUsers = async () => {
+        setLoading(true)
             try {
-                const response = await fetch_get(`/api/v1/users/list`, {
+                const response = await fetch_get(`/api/users/list`, {
                     page: currentPage,  
                     size: 5,
                     search: debouncedSearchQuery
@@ -73,7 +75,7 @@ const Users = () => {
             }
         };
 
-        const getBooks = async () => {
+    const getBooks = async () => {
             try {
                 const response = await fetch_get('/api/books/list',{
                     page: currentPage,
@@ -84,11 +86,7 @@ const Users = () => {
             } catch (err) {
             showToast('Failed to load books', 'error')
             }
-        };
-
-        getUsers();
-        getBooks();
-    }, [currentPage, debouncedSearchQuery]);
+    };
 
     const showToast = (message, type = 'success') => {
         setToastMessage(message);
@@ -140,6 +138,7 @@ const Users = () => {
     }
     
     const handleSaveUser = async () => {
+        setLoading(true)
         if (!userName || !userEmail || !phoneNumber) {
             setIssueError("All fields are required.");
             return;
@@ -164,11 +163,11 @@ const Users = () => {
 
     try {
             if (editingUserId) {
-                await fetch_patch(`/api/v1/users/update/${editingUserId}`, userData);
+                await fetch_patch(`/api/users/update/${editingUserId}`, userData);
                 showToast("User updated successfully!");
 
             } else {
-                await fetch_post(`/api/v1/users/register`, [userData]);
+                await fetch_post(`/api/users/register`, [userData]);
                 showToast("User added successfully!");
             }
 
@@ -176,41 +175,43 @@ const Users = () => {
             setUserName("");
             setUserEmail("");
             setPhoneNumber("");
-            const response = await fetch_get(`/api/v1/users/list`,{ page: currentPage, size: 5, search: debouncedSearchQuery });
+            const response = await fetch_get(`/api/users/list`,{ page: currentPage, size: 5, search: debouncedSearchQuery });
             setUsers(response.data.content);
 
         } catch (error) {
           setIssueError(error.response.data.message)
+        }finally{
+            setLoading(false)
         }
     };
 
     const handleDelete = async () => {
+        setLoading(true)
         try {
-            const response = await fetch_delete(`/api/v1/users/delete/${userToDelete.id}`);
+            const response = await fetch_delete(`/api/users/delete/${userToDelete.id}`);
             setUserToDelete(null);
             setDeleteModalOpen(false);
-            const updatedUsers = await fetch_get(`/api/v1/users/list`, { page: currentPage, size: 5, search: debouncedSearchQuery });
+            const updatedUsers = await fetch_get(`/api/users/list`, { page: currentPage, size: 5, search: debouncedSearchQuery });
             setUsers(updatedUsers.data.content);
             showToast(response.data.message);
     
         } catch (error) {
             showToast(error.response.data.message, "error")
         }
+        finally{
+            setLoading(false)
+        }
     };
     
     
-
     const handleSelectBook = (option) => {
         setSelectedBook(books.find(book => book.title === option.label));
     };
     
     const handleIssueBook = async () => {
+        setLoading(true)
         if (!selectedBook || !issuanceType || !returnedAt || !editingUserId) {
             setIssueError('All fields are required for issuing a book.');
-            console.log('selectedBook:', selectedBook);
-            console.log('issuanceType:', issuanceType);
-            console.log('returnedAt:', returnedAt);
-            console.log('editingUserId:', editingUserId);
             return;
         }
     
@@ -225,7 +226,7 @@ const Users = () => {
                 issuanceType,
                 status: "ISSUED",
             };
-            const result = await fetch_post('/api/v1/issuances/save', issuanceData);
+            const result = await fetch_post('/api/issuances/save', issuanceData);
             
             setSelectedBook(null);
             setIssuanceType("");
@@ -233,13 +234,14 @@ const Users = () => {
             handleCloseModal();
             showToast(result.data.message);
     
-            const response = await fetch_get('/api/v1/users/list');
+            const response = await fetch_get('/api/users/list');
             setUsers(response.data.content);
     
         } catch (error) {
             handleCloseModal();
-            console.error("Error issuing book:", error);
             showToast("Failed to issue book", 'error');
+        }finally{
+            setLoading(false)
         }
     };
     
@@ -292,12 +294,12 @@ const Users = () => {
         { label: 'Issue', value: 'issue' },
         { label: 'History', value: 'history' },
     ];
+
     const handleSearch = (query) => {
         setSearchQuery(query);
         setCurrentPage(0); 
     };
 
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
     const columns = [
@@ -421,9 +423,10 @@ const Users = () => {
         </>
     )}
 </Modal>
-
-            {users.length === 0 ? (
-                <div className='no-books-found'>Users not found!</div>
+    {loading ? (
+        <Loader />
+      ):users.length === 0 ? (
+            <div className='no-books-found'>Users not found!</div>
             ):(
                 <>
             <Table columns={columns} data={dataWithSerialNumbers} />

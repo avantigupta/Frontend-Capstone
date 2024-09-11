@@ -1,7 +1,7 @@
 import React from "react";
-import "../styles/Header.css";
-import profile from "../Assets/Icons/profile.png";
-import logo from "../Assets/online-library.png";
+import "../styles/header.css";
+import profile from "../assets/icons/profile.png";
+import logo from "../assets/online-library.png";
 import { useEffect, useState } from "react";
 
 function Header({ title }) {

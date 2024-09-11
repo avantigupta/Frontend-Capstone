@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import "../styles/Login.css";
-import hero_section from "../Assets/HeroSection.png";
-import Button from '../components/Button';
+import "../styles/login.css";
+import hero_section from "../assets/HeroSection.png";
+import Button from '../components/button';
 import { useNavigate } from 'react-router-dom';
 import { validateForm } from '../utils/formValidation';
-import Toast from "../components/Toast";
+import Toast from "../components/toast";
 import {fetch_post} from '../api/apiManager'
+import Loader from '../components/loader';
 
 function Login() {
   const [role, setRole] = useState("admin");
@@ -17,6 +18,7 @@ function Login() {
   const [toastMessage, setToastMessage] = useState(null);
   const [toastType, setToastType] = useState('success');
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -74,8 +76,6 @@ function Login() {
     };
   
     const newErrors = validateForm(formData);
-    console.log(formData)
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -86,9 +86,9 @@ function Login() {
     setErrorMessage(""); 
   
    if (!validateAndSetErrors()) return;
-  
-    const encryptedPassword = btoa(password);
-    const credentials = {
+   setLoading(true);
+   const encryptedPassword = btoa(password);
+   const credentials = {
       usernameOrPhoneNumber: username,
       password: encryptedPassword,
     };
@@ -119,12 +119,15 @@ function Login() {
       }
     } catch (error) {
       setErrorMessage("Bad credentials")
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
     <div className="container">
       <div className="login-container">
+      {loading && <Loader />}
         <div className="login-content">
           {isToastVisible && (
             <Toast
@@ -133,6 +136,8 @@ function Login() {
               onClose={() => setIsToastVisible(false)}
             />
           )}
+          
+        
           <form onSubmit={handleLogin}>
             <div className='radio-group'>
               <label>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import HocContainer from "../HocContainer";
+import HocContainer from "../hocContainer";
 import Modal from "../modal";
-import Table from "../Table";
+import Table from "../table";
 import SearchBox from "../searchBox";
-import Toast from "../Toast";
-import Button from "../Button";
+import Toast from "../toast";
+import Button from "../button";
 import "../../styles/categories.css";
 import Loader from "../loader";
 import {
@@ -33,22 +33,22 @@ const Category = () => {
 
   useEffect(() => {
     getCategories();
-  }, [currentPage, searchQuery]); 
+  }, [currentPage, searchQuery]);
 
   const getCategories = async () => {
     setLoading(true);
     try {
       const response = await fetch_get(`/api/categories/list`, {
         page: currentPage,
-        size: 5,
+        size: 8,
         search: searchQuery,
       });
       setCategories(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (err) {
       showToast("Failed to load categories", "error");
-    }finally {
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,14 +69,21 @@ const Category = () => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-
-    setTypingTimeout(
-      setTimeout(() => {
-        setSearchQuery(query);
-        setCurrentPage(0);
-      }, 500)
-    );
+  
+    const trimmedQuery = query.trim();
+    if (trimmedQuery) {
+      setTypingTimeout(
+        setTimeout(() => {
+          setSearchQuery(trimmedQuery);
+          setCurrentPage(0);
+        }, 500)
+      );
+    } else {
+      setSearchQuery('');
+      setCurrentPage(0);
+    }
   };
+  
 
   const handleOpenModal = (category = null) => {
     setIsDeleteConfirmation(false);
@@ -122,7 +129,7 @@ const Category = () => {
 
       setCategoryName("");
       handleCloseModal();
-      getCategories(); 
+      getCategories();
     } catch (error) {
       if (error.response) {
         if (error.response.status === 409) {
@@ -132,9 +139,8 @@ const Category = () => {
           showToast("Failed to save category. Please try again.", "error");
         }
       }
-    }
-    finally {
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,7 +150,7 @@ const Category = () => {
       const result = await fetch_delete(`/api/categories/delete/${categoryToDelete.id}`);
       setCategoryToDelete(null);
       handleCloseModal();
-      getCategories(); 
+      getCategories();
       showToast(result.data.message);
     } catch (error) {
       if (error.response) {
@@ -156,8 +162,8 @@ const Category = () => {
           showToast("Cannot delete category, it has associated books!", "error");
         }
       }
-    }finally {
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -201,6 +207,7 @@ const Category = () => {
     ...category,
     serialNumber: currentPage * 5 + index + 1,
   }));
+
   return (
     <div className="category-page">
       <div className="category-content">
@@ -216,7 +223,26 @@ const Category = () => {
           </Button>
         </div>
       </div>
-
+      <Modal
+        isOpen={modalOpen}
+        onClose={handleCloseModal}
+        onSubmit={isDeleteConfirmation ? handleDelete : handleSaveCategory}
+        title={editingCategoryId ? "Edit Category" : "Add Category"}
+        isDeleteConfirmation={isDeleteConfirmation}
+        deleteMessage="Are you sure you want to delete this category?"
+      >
+        {!isDeleteConfirmation && (
+          <>
+            <input
+              type="text"
+              placeholder="Category Name"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+            />
+          </>
+        )}
+        {error && <div className="error-books">{error}</div>}
+      </Modal>
       {loading ? (
         <Loader />
       ) : categories.length === 0 ? (

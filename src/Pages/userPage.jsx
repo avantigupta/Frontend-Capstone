@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
+import Header from "../components/header";
 import { useNavigate, useLocation } from "react-router-dom";
-import Button from "../components/Button";
-import Table from "../components/Table";
+import Button from "../components/button";
+import Table from "../components/table";
 import { fetch_get } from "../api/apiManager";
 import '../styles/userPage.css';
 
@@ -42,10 +42,7 @@ const UserPage = () => {
     }, [userId]);
 
     const handleLogout = () => {    
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        localStorage.removeItem("username");
-        localStorage.removeItem("role");
+        localStorage.clear()
         navigate("/", { replace: true }); 
     };
 
