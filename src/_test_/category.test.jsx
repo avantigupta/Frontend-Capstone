@@ -174,14 +174,11 @@ describe('showToast function', () => {
       </MemoryRouter>
     );
     
-    // Ensure the search bar and "Add Category" button are rendered
     expect(screen.getByPlaceholderText("Search...")).toBeInTheDocument();
     expect(screen.getByText("Add Category")).toBeInTheDocument();
     
-    // Simulate clicking the "Add Category" button
     fireEvent.click(screen.getByText("Add Category"));
     
-    // Wait for the modal to open and the Category Name input field to appear
     await waitFor(() => {
       expect(screen.getByPlaceholderText("Category Name")).toBeInTheDocument();
     });
@@ -195,16 +192,12 @@ describe('showToast function', () => {
       </MemoryRouter>
     );
     
-    // Simulate clicking the "Add Category" button to open the modal
     fireEvent.click(screen.getByText("Add Category"));
     
-    // Wait for the input field to appear
     const inputElement = await screen.findByPlaceholderText('Category Name');
     
-    // Simulate typing into the input field
     fireEvent.change(inputElement, { target: { value: 'New Category Name' } });
     
-    // Assert that the input value has changed
     expect(inputElement.value).toBe('New Category Name');
   });
   
@@ -241,18 +234,14 @@ describe('showToast function', () => {
   it('should show the toast with the correct message and type', async () => {
     render(<TestComponent />);
   
-    // Simulate user clicking on 'Show Toast'
     userEvent.click(screen.getByText('Show Toast'));
   
-    // Assert that the toast message appears
     expect(screen.getByText('This is a toast message')).toBeInTheDocument();
   
-    // Advance the timer and ensure the toast message disappears
     await act(async () => {
       jest.advanceTimersByTime(4000);
     });
   
-    // Assert that the toast message has been removed after 4 seconds
     expect(screen.queryByText('This is a toast message')).not.toBeInTheDocument();
   });
 
@@ -332,7 +321,6 @@ describe('Category Component', () => {
       </MemoryRouter>
     );
 
-    // Wait for the initial render to complete
     await waitFor(() => {
       expect(screen.getByText('Add Category')).toBeInTheDocument();
     });
@@ -352,10 +340,8 @@ describe('Category Component', () => {
       );
     });
 
-    // Debug: Log the current state of the DOM
     debug();
 
-    // Check for either success message or error message
     await waitFor(() => {
       const successMessage = screen.queryByText('Category added successfully');
       const errorMessage = screen.queryByText('Failed to load categories');
@@ -369,8 +355,6 @@ describe('Category Component', () => {
       }
     });
   });
-
- 
 
   it('should handle errors when saving a category', async () => {
     fetch_post.mockRejectedValueOnce({ 

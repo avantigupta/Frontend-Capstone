@@ -40,6 +40,7 @@
         const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
         const [historyData, setHistoryData] = useState([]);
         const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+        const [returnTime, setReturnTime] = useState("");
     
         const navigate = useNavigate();
 
@@ -225,7 +226,7 @@
         
         const handleIssueBook = async () => {
             setLoading(true)
-            if (!selectedBook || !issuanceType || !returnedAt || !editingUserId) {
+            if (!selectedBook || !issuanceType || (!returnedAt && issuanceType === "Takeaway") || (!returnTime && issuanceType === "InHouse") || !editingUserId) {
                 setIssueError('All fields are required for issuing a book.');
                 return;
             }
@@ -233,8 +234,13 @@
             try {
                 setModalOpen(false);
                 setLoading(true);
-                const formattedReturnedAt = formatDateTime(new Date(returnedAt));
-                
+                let formattedReturnedAt;
+            if (issuanceType === "InHouse") {
+                const currentDate = new Date().toISOString().split('T')[0];
+                formattedReturnedAt = formatDateTime(new Date(`${currentDate}T${returnTime}:00`));
+            } else {
+                formattedReturnedAt = formatDateTime(new Date(returnedAt));
+            }
                 const issuanceData = {
                     userId: editingUserId,
                     bookId: selectedBook.value,
@@ -248,6 +254,7 @@
                 setSelectedBook(null);
                 setIssuanceType("");
                 setReturnedAt(null);
+                setReturnTime("");
                 handleCloseModal();
                 showToast(result.data.message);
                 navigate('/issuances')
@@ -278,7 +285,10 @@
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
             return now.toISOString().slice(0, 16);
           };
-        
+        const getCurrentTime = () => {
+            const now = new Date();
+            return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        };
         const formatDateTime = (date) => {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -402,20 +412,33 @@
         placeholder={selectedBook ? selectedBook.label : "Search for a book"}
     />
             
-                <select
-                    value={issuanceType}
-                    onChange={(e) => setIssuanceType(e.target.value)}
-                >
+                         <select
+                            value={issuanceType}
+                            onChange={(e) => {
+                                setIssuanceType(e.target.value);
+                                setReturnedAt(null);
+                                setReturnTime("");
+                            }}
+                        >       
                     <option value="" disabled>Select Issuance Type</option>
                     <option value="InHouse">In House</option>
                     <option value="Takeaway">Takeaway</option>
                 </select>
-                <input
-                    type="datetime-local"
-                    value={returnedAt}
-                    onChange={(e) => setReturnedAt(e.target.value)}
-                    min={getCurrentDateTime()}
-                />
+                {issuanceType === "InHouse" ? (
+                            <input
+                                type="time"
+                                value={returnTime}
+                                onChange={(e) => setReturnTime(e.target.value)}
+                                min={getCurrentTime()}
+                            />
+                        ) : (
+                            <input
+                                type="datetime-local"
+                                value={returnedAt}
+                                onChange={(e) => setReturnedAt(e.target.value)}
+                                min={getCurrentDateTime()}
+                            />
+                )}
                 {issueError && <div className="error-books">{issueError}</div>}
             </div>
         ) : (

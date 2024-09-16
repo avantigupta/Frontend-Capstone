@@ -10,7 +10,6 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: '/dashboard' })
 }));
 
-// Mock the images
 jest.mock('../assets/icons/dashboard.png', () => 'dashboard-icon');
 jest.mock('../assets/icons/book.png', () => 'book-icon');
 jest.mock('../assets/icons/library.png', () => 'library-icon');
@@ -37,7 +36,6 @@ describe('SideNav Component', () => {
     );
   };
 
-  // Test 1: Component renders correctly
   test('renders SideNav component', () => {
     setup();
 
@@ -79,7 +77,6 @@ describe('SideNav Component', () => {
   });
  
 
-  // Test 3: Logout button opens the modal
   test('opens logout confirmation modal when clicking logout button', () => {
     setup();
 

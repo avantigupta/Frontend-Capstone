@@ -15,10 +15,8 @@ describe('Toast Component', () => {
     const handleClose = jest.fn();
     render(<Toast message="Test message" onClose={handleClose} />);
     
-    // Click the close button
     fireEvent.click(screen.getByText('×'));
     
-    // Check if onClose callback was called
     expect(handleClose).toHaveBeenCalled();
   });
 

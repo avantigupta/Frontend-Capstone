@@ -1,12 +1,10 @@
 .user-page{
-    padding: 0;
+    padding: 0 3% ;
 }
 
 .heading-user{
-    padding-left: 3.5%;
     margin-top: 15px;
 } 
-
 
 .btn-history{
     position: absolute;

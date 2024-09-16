@@ -137,7 +137,9 @@ function Login() {
             />
           )}
           
-        
+         <div>
+          <h2 className='heading-title'>Welcome to BookNest!</h2>
+         </div>
           <form onSubmit={handleLogin}>
             <div className='radio-group'>
               <label>

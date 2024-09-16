@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-// import '@testing-library/jest-dom/extend-expect';
-import SearchBar from '../components/searchBox'; // Adjust the import path if necessary
+import SearchBar from '../components/searchBox'; 
 
 describe('SearchBar Component', () => {
   test('renders SearchBar component', () => {

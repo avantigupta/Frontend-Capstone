@@ -1,10 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import HocContainer from '../components/hocContainer'; // Update this path as needed
+import HocContainer from '../components/hocContainer';
 import { BrowserRouter } from 'react-router-dom';
 
-// Mock the child components
 jest.mock('../components/header', () => {
   return {
     __esModule: true,

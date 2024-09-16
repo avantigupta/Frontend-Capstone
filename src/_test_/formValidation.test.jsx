@@ -1,7 +1,6 @@
 const { validateForm } = require('../utils/formValidation'); // Adjust the import path as needed
 
 describe('validateForm', () => {
-  // Username tests
   describe('username validation', () => {
     test('should return error if username is empty', () => {
       const result = validateForm({ username: '' });
@@ -34,7 +33,6 @@ describe('validateForm', () => {
     });
   });
 
-  // Password tests
   describe('password validation', () => {
     test('should return error if password is empty', () => {
       const result = validateForm({ password: '' });
@@ -47,7 +45,6 @@ describe('validateForm', () => {
     });
   });
 
-  // Category name tests
   describe('category name validation', () => {
     test('should return error if category name is empty', () => {
       const result = validateForm({ categoryName: '' });
@@ -65,7 +62,6 @@ describe('validateForm', () => {
     });
   });
 
-  // Combined tests
   describe('combined field validation', () => {
     test('should validate multiple fields correctly', () => {
       const result = validateForm({

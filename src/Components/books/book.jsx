@@ -47,7 +47,8 @@ const Books = () => {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [userName, setUserName] = useState("");
-  
+  const [returnTime, setReturnTime] = useState("");
+
   const fetchBooksAndCategories = async () => {
     setLoading(true); 
     try {
@@ -152,7 +153,7 @@ const Books = () => {
     
     setIsDeleteConfirmation(false);
     setModalOpen(true);
-    setIssueError(""); // Clear the error when opening the modal
+    setIssueError(""); 
 
   };
 
@@ -289,7 +290,7 @@ const Books = () => {
   };
 
   const handleIssueBook = async () => {
-    if (!selectedBook || !mobileNumber || !issuanceType || !status || !returnedAt) {
+    if (!selectedBook || !mobileNumber || !issuanceType || !status || (!returnedAt && issuanceType === "Takeaway") || (!returnTime && issuanceType === "InHouse")) {
       setIssueError("All fields are required for issuing a book!");
       return;
     }
@@ -297,12 +298,18 @@ const Books = () => {
     try {
       const userResponse = await fetch_get(`${USERS_BY_MOBILE_NUMBER}${mobileNumber}`);
       const userId = userResponse.data.id;
-  
+      let returnDateTime;
+      if (issuanceType === "InHouse") {
+        const currentDate = new Date().toISOString().split('T')[0];
+        returnDateTime = `${currentDate}T${returnTime}:00`;
+      } else {
+        returnDateTime = returnedAt;
+      }
       const issuanceData = {
         userId: userId,
         bookId: selectedBook.id,
         issuedAt: formatDateTime(new Date()),
-        returnedAt: formatDateTime(new Date(returnedAt)),
+        returnedAt: formatDateTime(new Date(returnDateTime)),
         issuanceType: issuanceType,
         status: status,
       };
@@ -330,7 +337,7 @@ const Books = () => {
   
   const handleInputChange = (setter) => (e) => {
     setter(e.target.value);
-    setIssueError(""); // Clear the error as soon as the user types
+    setIssueError(""); 
   };
 
   const formatDateTime = (date) => {
@@ -348,12 +355,16 @@ const Books = () => {
     setSearchQuery(query);
     setCurrentPage(0);
   };
+  const getCurrentTime = () => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  };
 
-    const getCurrentDateTime = () => {
+  const getCurrentDateTime = () => {
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       return now.toISOString().slice(0, 16);
-    };
+  };
   
   if (error) return <div>{error}</div>;
 
@@ -512,12 +523,21 @@ const Books = () => {
               <option value="ISSUED">Issued</option>
             </select>
           
-            <input
-              type="datetime-local"
-              value={returnedAt}
-              onChange={(e) => setReturnedAt(e.target.value)}
-              min={getCurrentDateTime()} 
-            />
+            {issuanceType === "InHouse" ? (
+              <input
+                type="time"
+                value={returnTime}
+                onChange={(e) => setReturnTime(e.target.value)}
+                min={getCurrentTime()}
+              />
+            ) : (
+              <input
+                type="datetime-local"
+                value={returnedAt}
+                onChange={(e) => setReturnedAt(e.target.value)}
+                min={getCurrentDateTime()}
+              />
+            )}
           </>
         )}
           {mobileNumber && userName && (
