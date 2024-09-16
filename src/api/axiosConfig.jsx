@@ -29,7 +29,8 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error?.response && error?.response?.status === 401) {
             window.localStorage.clear();
-            if (!localStorage.getItem('token')) {
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/') {
                 window.location.href = '/'; 
             }
         } 

@@ -1,13 +1,6 @@
-.add-book{
-    position: absolute;
-    left: 85%;
-    
-  }
-
 .book-page{
-    padding: 2%;
-
-  }
+    padding: 3%;
+}
 
 .no-books-found{
     position: absolute;
@@ -16,37 +9,45 @@
 }
 
 .book-content{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 25% 10.2%;
+    text-align: left;
+    justify-content: space-between; 
 }
 
 .username-mobile{
 color: rgb(47, 130, 47);
-
+font-size: 14px;
+margin-top: -10px;
+margin-bottom: 10px;
+text-align: left;
+width: 70%; 
+margin-left: auto;
+margin-right: auto;
 }
 
 .error-books{
-  color: red;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    text-align: left;
+    width: 70%; 
+    margin-left: auto;
+    margin-right: auto;
+    color: red;
 }
 
 @media only screen and (max-width: 768px) {
-  .add-book {
-      margin-top: 10px;
-      left: 77%; 
-  }
-
-  .book-page {
-      padding: 20px;
-      position: relative;
-      overflow-x: auto;
+    .book-page {
+      padding: 5%;
     }
 
-  .no-books-found {
+    .no-books-found {
       position: static; 
       text-align: center; 
-  }
+    }
 
-  .book-content {
-      gap: 20px;
-  }
+    .book-content{
+        grid-template-columns: 25% 20%;
+    }
 }

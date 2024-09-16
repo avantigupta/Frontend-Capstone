@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/dashboard.css";
-import book from "../assets/icons/book (1).png";
-import users from "../assets/icons/user (1).png";
+import book from "../assets/icons/bookDashboard.png";
+import users from "../assets/icons/userDashboard.png";
 import takeawayReaders from "../assets/icons/open-book.png";
 import house from "../assets/icons/house.png";
 import category from "../assets/icons/apps.png";
@@ -9,6 +9,7 @@ import readers from "../assets/icons/reader.png";
 import HocContainer from "../components/hocContainer";
 import { fetch_get} from "../api/apiManager";
 import Card from "../components/card";
+import { COUNT } from "../utils/constants";
 
 function Dashboard() {
   const [counts, setCounts] = useState({
@@ -23,7 +24,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const response = await fetch_get('/api/books/count/all');
+        const response = await fetch_get(`${COUNT}`);
         const { bookCount, categoryCount, userCount, issuanceCountByType, activeUserCount } = response.data;
 
         setCounts({
@@ -35,7 +36,7 @@ function Dashboard() {
           takeawayCount: issuanceCountByType['Takeaway'] || 0
         });
       } catch (error) {
-        console.error("Error fetching counts", error);
+        return
       }
     };
     fetchCounts();
@@ -50,16 +51,14 @@ function Dashboard() {
         </div>
       </div>
       <div className="dashboard-container">
-      <div className="card-row">
           <Card icon={book} count={counts.bookCount} label="Total Books" />
           <Card icon={users} count={counts.userCount} label="Users" />
           <Card icon={category} count={counts.categoryCount} label="Categories" />
-        </div>
-        <div className="card-row">
+ 
           <Card icon={readers} count={counts.activeUserCount} label="Issued Books" />
           <Card icon={house} count={counts.inHouseCount} label="In-House Users" />
           <Card icon={takeawayReaders} count={counts.takeawayCount} label="Takeaway Readers" />
-        </div>
+        
       </div>
     </div>
   );

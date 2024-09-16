@@ -15,7 +15,7 @@ const UserHistory = () => {
     useEffect(() => {
         const fetchIssuanceHistory = async () => {
             try {
-                const response = await fetch_get(`/api/v1/issuances/user/${userId}`);
+                const response = await fetch_get(`/api/issuances/user/${userId}`);
                 setHistory(response.data);
             } catch (err) {
                 setError('Failed to load issuance history.');
@@ -24,7 +24,7 @@ const UserHistory = () => {
 
         const fetchUsername = async () => {
             try {
-                const response = await fetch_get(`/api/v1/users/${userId}`); 
+                const response = await fetch_get(`/api/users/${userId}`); 
                 setUsername(response.data.name);
             } catch (err) {
                 setError('Failed to load user details.');
@@ -67,7 +67,7 @@ const UserHistory = () => {
     }));
 
     return (
-        <div>
+        <div className='book-history-page'>
             <div className='book-history'>
                 <img 
                     src={arrow} 

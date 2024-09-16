@@ -12,20 +12,12 @@
   margin: 0;
 
 }
-
-.toast button {
-  float: right;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-} 
  
 .toast.success {
   background-color: green; 
 }
 
 .toast.error {
-  background-color: red; 
+  background-color: #FF5757; 
 }
 

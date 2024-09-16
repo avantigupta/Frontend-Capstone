@@ -13,8 +13,8 @@ const Toast = ({ message, onClose, type='success' }) => {
 
   return (
     <div className={`toast ${type}`} style={{ display: show ? 'block' : 'none' }}>
+
       <p>{message}</p>
-      <button onClick={onClose}>&times;</button>
     </div>
   );
 };

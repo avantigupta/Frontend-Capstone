@@ -5,6 +5,7 @@ import Button from "../components/button";
 import Table from "../components/table";
 import { fetch_get } from "../api/apiManager";
 import '../styles/userPage.css';
+import Modal from "../components/modal";
 
 const UserPage = () => {
     const navigate = useNavigate();
@@ -15,6 +16,20 @@ const UserPage = () => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    setIsModalOpen(true); 
+  };
+  const confirmLogout = () => {
+    localStorage.clear();
+    navigate("/");
+    setIsModalOpen(false);
+  };
+
+  const cancelLogout = () => {
+    setIsModalOpen(false);
+  };
 
     useEffect(() => {
         if (!localStorage.getItem("token") || role !== "user") {
@@ -41,11 +56,6 @@ const UserPage = () => {
         fetchIssuanceHistory();
     }, [userId]);
 
-    const handleLogout = () => {    
-        localStorage.clear()
-        navigate("/", { replace: true }); 
-    };
-
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
@@ -63,7 +73,7 @@ const UserPage = () => {
         const hours = String(istTime.getHours()).padStart(2, '0');
         const minutes = String(istTime.getMinutes()).padStart(2, '0');
     
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+        return `${year}-${month}-${day}, ${hours}:${minutes}`;
     };
     const columns = [
         { header: 'S.No', accessor: 'serialNumber' },
@@ -81,17 +91,24 @@ const UserPage = () => {
     return (
         <div>
             <Header title="User Dashboard" />
-            <div>
+            <div className="user-page">
                 <h2 className="heading-user">{username}</h2>
                 {history.length === 0 ? (
                     <div className="user-history">History not available</div>
                 ) : (
-                    <Table columns={columns} data={dataWithSerialNumbers} className="custom-table" />
+                    <Table columns={columns} data={dataWithSerialNumbers} />
                 )}
             </div>
             <Button className="btn-history" onClick={handleLogout}>
                 Logout
             </Button>
+            <Modal
+    isOpen={isModalOpen}
+    onClose={cancelLogout}
+    onSubmit={confirmLogout}
+    logoutConfirm
+    logoutMessage="Are you sure you want to log out?"
+  />
         </div>
     );
 };

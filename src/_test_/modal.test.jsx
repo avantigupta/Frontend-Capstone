@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Modal from "../components/modal";
-import Button from "../components/Button";
+import Button from "../components/button";
 
 // Mock Button component to avoid unrelated errors
 jest.mock("../components/Button", () => ({ onClick, children, className }) => (

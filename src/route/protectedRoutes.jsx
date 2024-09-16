@@ -8,6 +8,15 @@ const ProtectedRoutes = ({ allowedRoles }) => {
   if (!token) {
     return <Navigate to="/" replace />;
   }
+  if (!allowedRoles.includes(role)) {
+    if (role === 'admin') {
+      return <Navigate to="/dashboard" replace />;
+    } else if (role === 'user') {
+      return <Navigate to="/userPage" replace />;
+    } else {
+      return <Navigate to="/" replace />;
+    }
+  }
   return <Outlet />;
 };
 

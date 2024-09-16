@@ -14,6 +14,7 @@ import {
   fetch_delete,
 } from "../../api/apiManager";
 import { validateForm } from "../../utils/formValidation";
+import { CATEGORY_API, CATEGORY_DELETE, CATEGORY_POST, CATEGORY_UPDATE } from "../../utils/constants";
 
 const Category = () => {
   const [toastMessage, setToastMessage] = useState(null);
@@ -38,7 +39,7 @@ const Category = () => {
   const getCategories = async () => {
     setLoading(true);
     try {
-      const response = await fetch_get(`/api/categories/list`, {
+      const response = await fetch_get(`${CATEGORY_API}`, {
         page: currentPage,
         size: 8,
         search: searchQuery,
@@ -61,7 +62,7 @@ const Category = () => {
     if (toastMessage) {
       setTimeout(() => {
         setToastMessage(null);
-      }, 4000);
+      }, 5000);
     }
   }, [toastMessage]);
 
@@ -70,14 +71,14 @@ const Category = () => {
       clearTimeout(typingTimeout);
     }
   
-    const trimmedQuery = query.trim();
-    if (trimmedQuery) {
+    const trimmedQuery = query.trim().replace(/\s+/g, "");
+    if (trimmedQuery.length >= 3) {
       setTypingTimeout(
         setTimeout(() => {
           setSearchQuery(trimmedQuery);
           setCurrentPage(0);
-        }, 500)
-      );
+        }, 1000)
+      );  
     } else {
       setSearchQuery('');
       setCurrentPage(0);
@@ -118,12 +119,12 @@ const Category = () => {
       let result;
       if (editingCategoryId) {
         result = await fetch_put(
-          `/api/categories/update/${editingCategoryId}`,
+          `${CATEGORY_UPDATE}${editingCategoryId}`,
           categoryData
         );
         showToast(result.data.message);
       } else {
-        result = await fetch_post(`/api/categories/save`, [categoryData]);
+        result = await fetch_post(`${CATEGORY_POST}`, [categoryData]);
         showToast(result.data.message);
       }
 
@@ -147,19 +148,19 @@ const Category = () => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const result = await fetch_delete(`/api/categories/delete/${categoryToDelete.id}`);
+      const result = await fetch_delete(`${CATEGORY_DELETE}${categoryToDelete.id}`);
       setCategoryToDelete(null);
       handleCloseModal();
       getCategories();
       showToast(result.data.message);
     } catch (error) {
       if (error.response) {
-        if (error.response.status === 409) {
+        if (error.response.status === 405) {
           handleCloseModal();
           showToast(error.response.data.message, "error");
         } else {
           handleCloseModal();
-          showToast("Cannot delete category, it has associated books!", "error");
+          showToast("Cannot delete, please try again later", "error");
         }
       }
     } finally {
@@ -205,23 +206,21 @@ const Category = () => {
 
   const dataWithSerialNumbers = categories.map((category, index) => ({
     ...category,
-    serialNumber: currentPage * 5 + index + 1,
+    serialNumber: currentPage * 8 + index + 1,
   }));
 
   return (
     <div className="category-page">
-      <div className="category-content">
+      <div className="category-content" >
         {toastMessage && (
           <Toast message={toastMessage} type={toastType} onClose={() => setToastMessage(null)} />
         )}
-        <div>
+        
           <SearchBox placeholder="Search..." onSearch={handleSearch} />
-        </div>
-        <div>
-          <Button className="add-category" onClick={() => handleOpenModal(null)}>
+          <Button className="add-category"  onClick={() => handleOpenModal(null)}>
             Add Category
           </Button>
-        </div>
+       
       </div>
       <Modal
         isOpen={modalOpen}
@@ -248,7 +247,8 @@ const Category = () => {
       ) : categories.length === 0 ? (
         <div className="no-books-found">Category not available</div>
       ) : (
-        <>
+        < div data-testid="category-container">
+
           <Table columns={columns} data={dataWithSerialNumbers} />
           <div className="pagination-controls">
             <button onClick={handlePreviousPage} disabled={currentPage === 0}>
@@ -261,7 +261,7 @@ const Category = () => {
               Next
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

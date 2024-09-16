@@ -19,7 +19,7 @@ const BookHistory = () => {
             try {
                 const response = await fetch_get(`/api/books/${bookId}/issuances`); 
                 setHistory(response.data);
-                setTitle(response.data[0]?.book?.title || 'Unknown Book Title');
+                setTitle(response.data[0]?.book?.title);
             } catch (err) {
                 setError('Failed to load issuance history.');
             } finally {
@@ -56,7 +56,7 @@ const BookHistory = () => {
     ];
 
     return (
-        <div>
+        <div className='book-history-page'>
             <div className='book-history'>
                 <img 
                     src={arrow} 

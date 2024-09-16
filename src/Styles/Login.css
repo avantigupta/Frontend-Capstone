@@ -92,8 +92,6 @@
     max-width: 500px; 
   
   }
-  
-
 
   .input-error {
     border: 1px solid rgb(255, 21, 21);
@@ -115,6 +113,4 @@
       height: 340px;
       max-width: 600px;
     }
-
-   
 }

@@ -13,15 +13,16 @@ const SearchBar = ({ placeholder, onSearch }) => {
   };
 
   return (
-    <div className="search-bar">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={handleSearch}
-        placeholder={placeholder}
-      />
-      <img src={SearchIcon} alt='search' className='search-icon' />
-    </div>
+      <div className="search-bar">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearch}
+          placeholder={placeholder}
+        />
+        <img src={SearchIcon} alt='search' className='search-icon' width="70%"/>
+        
+      </div>
   );
 };
 

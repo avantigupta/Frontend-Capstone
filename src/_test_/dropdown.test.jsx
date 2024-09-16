@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Dropdown from '../components/Dropdown'; 
+import Dropdown from '../components/dropdown'; 
 
 describe('Dropdown Component', () => {
   const mockOnSelect = jest.fn();

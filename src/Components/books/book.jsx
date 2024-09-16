@@ -16,6 +16,7 @@ import Dropdown from "../dropdown";
 import { useNavigate } from "react-router-dom";
 import Loader from "../loader";
 import ActionIcon from "../../assets/icons/more.png";
+import { BOOK_DELETE, BOOK_POST, BOOK_UPDATE, BOOKS_API, CATEGORY, ISSUANCES_POST, USERS_BY_MOBILE_NUMBER } from "../../utils/constants";
 
 const Books = () => {
   const navigate = useNavigate();
@@ -51,12 +52,12 @@ const Books = () => {
     setLoading(true); 
     try {
       const [booksResponse, categoriesResponse] = await Promise.all([
-        fetch_get("/api/books/list", {
+        fetch_get(`${BOOKS_API}`, {
           page: currentPage,
-          size: 5,
+          size: 8,
           search: debouncedSearchQuery,
         }),
-        fetch_get("/api/categories"),
+        fetch_get(`${CATEGORY}`),
       ]);
 
       setBooks(booksResponse.data.content);
@@ -77,8 +78,10 @@ const Books = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       const trimmedQuery = searchQuery.trim();
-      setDebouncedSearchQuery(trimmedQuery);
-      setCurrentPage(0); 
+      if (trimmedQuery.length >= 3 || trimmedQuery === "") {
+               setDebouncedSearchQuery(trimmedQuery); 
+              setCurrentPage(0);
+       }
     }, 1000);
 
     return () => clearTimeout(handler);
@@ -96,7 +99,7 @@ const Books = () => {
 
     if (mobile.length === 10) {
       try {
-        const userResponse = await fetch_get(`/api/users/number/${mobile}`);
+        const userResponse = await fetch_get(`${USERS_BY_MOBILE_NUMBER}${mobile}`);
         const userName = userResponse.data.name;
         setUserName(userName);
         setIssueError(""); 
@@ -110,22 +113,6 @@ const Books = () => {
     }
 };
 
-// useEffect(() => {
-//   const handler = setTimeout(() => {
-//     const trimmedQuery = searchQuery.trim(); 
-
-//     if (trimmedQuery.length >= 3 || trimmedQuery === "") {
-//       setDebouncedSearchQuery(trimmedQuery); 
-//       setCurrentPage(0);
-//     }
-//   }, 1000);
-
-//   return () => {
-//     clearTimeout(handler);
-//   };
-// }, [searchQuery]);
-
-
   const handleHistoryModal = (book) => {
     navigate(`/bookHistory/${book.id}`);
   };
@@ -135,37 +122,16 @@ const Books = () => {
     setHistoryData([]);
   };
 
-  // const getBooks = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const [booksResponse, categoriesResponse] = await Promise.all([
-  //         fetch_get("/api/books/list", {
-  //           page: currentPage,
-  //           size: 8,
-  //           search: debouncedSearchQuery,
-  //         }),
-  //         fetch_get("/api/categories"),
-  //       ]);
-
-  //       setBooks(booksResponse.data.content);
-  //       setTotalPages(booksResponse.data.totalPages);
-  //       setCategories(categoriesResponse.data);
-  //     } catch (err) {
-  //       showToast("Failed to load books, try again later!", "error");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  // };
-
   const showToast = (message, type = "success") => {
     setToastMessage(message);
     setToastType(type);
   };
+
   useEffect(() => {
     if (toastMessage) {
       setTimeout(() => {
         setToastMessage(null);
-      }, 4000);
+      }, 5000);
     }
   }, [toastMessage]);
 
@@ -186,6 +152,8 @@ const Books = () => {
     
     setIsDeleteConfirmation(false);
     setModalOpen(true);
+    setIssueError(""); // Clear the error when opening the modal
+
   };
 
   const handleCloseModal = () => {
@@ -193,27 +161,58 @@ const Books = () => {
     setIssueError(null)
     setModalOpen(false);
   };
+  const validateBookTitle = (title) => {
+    const titleRegex = /^[a-zA-Z0-9\s.,'-]+$/; 
+    return titleRegex.test(title);
+  };
+  
+  const validateBookAuthor = (author) => {
+    const authorRegex = /^[a-zA-Z\s.']+$/; 
+    return authorRegex.test(author);
+  };
 
+  const validateQuantity = (value) => {
+    if (!/^\d+$/.test(value)) return { valid: false, error: "Quantity must be a non-negative whole number." };
+    return { valid: true, error: null };
+  };
   const handleSaveBook = async () => {
     const trimmedBookTitle = bookTitle.trim();
+    const quantityValidation = validateQuantity(quantity);
+
+  
     if (!trimmedBookTitle || !bookAuthor || quantity === null || !categoryForBook) {
       setIssueError("All fields are required!");
       return;
     }
   
+    if (!validateBookTitle(trimmedBookTitle)) {
+      setIssueError("Book title cannot contain special characters.");
+      return;
+    }
+  
+    if (!validateBookAuthor(bookAuthor)) {
+      setIssueError("Author name cannot contain special characters.");
+      return;
+    }
+
+    if (!quantityValidation.valid) {
+    setIssueError(quantityValidation.error);
+    return;
+    }
+    
     const bookData = {
       title: trimmedBookTitle,
       author: bookAuthor,
-      quantity: quantity,
+      quantity: parseInt(quantity, 10),
       categoryId: categoryForBook,
     };
     setLoading(true)
     try {
       let result;
       if (editingBookId) {
-        result = await fetch_put(`/api/books/update/${editingBookId}`, bookData);
+        result = await fetch_put(`${BOOK_UPDATE}${editingBookId}`, bookData);
       } else {
-        result = await fetch_post("/api/books/save", bookData);
+        result = await fetch_post(`${BOOK_POST}`, bookData);
       }
   
       showToast(result.data.message);
@@ -224,9 +223,9 @@ const Books = () => {
       setQuantity(null);
       handleCloseModal();
   
-      const response = await fetch_get("/api/books/list", {
+      const response = await fetch_get(`${BOOKS_API}`, {
         page: currentPage,
-        size: 5,
+        size: 8,
         search: debouncedSearchQuery,
       });
       setBooks(response.data.content);
@@ -240,12 +239,12 @@ const Books = () => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const result = await fetch_delete(`/api/books/delete/${bookToDelete.id}`);
+      const result = await fetch_delete(`${BOOK_DELETE}${bookToDelete.id}`);
       setBookToDelete(null);
       handleCloseModal();
-      const response = await fetch_get("/api/books/list", {
+      const response = await fetch_get(`${BOOKS_API}`, {
         page: currentPage,
-        size: 5,
+        size: 8,
         search: debouncedSearchQuery,
       });
       setBooks(response.data.content);
@@ -296,7 +295,7 @@ const Books = () => {
     }
   
     try {
-      const userResponse = await fetch_get(`/api/users/number/${mobileNumber}`);
+      const userResponse = await fetch_get(`${USERS_BY_MOBILE_NUMBER}${mobileNumber}`);
       const userId = userResponse.data.id;
   
       const issuanceData = {
@@ -308,7 +307,7 @@ const Books = () => {
         status: status,
       };
   
-      const result = await fetch_post("/api/issuances/save", issuanceData);
+      const result = await fetch_post(`${ISSUANCES_POST}`, issuanceData);
   
       setSelectedBook("");
       setMobileNumber("");
@@ -317,6 +316,7 @@ const Books = () => {
       setReturnedAt(null);
       handleCloseModal();
       showToast(result.data.message);
+      navigate('/issuances');
     } catch (error) {
       handleCloseModal();
   
@@ -328,6 +328,11 @@ const Books = () => {
     }
   };
   
+  const handleInputChange = (setter) => (e) => {
+    setter(e.target.value);
+    setIssueError(""); // Clear the error as soon as the user types
+  };
+
   const formatDateTime = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -344,13 +349,11 @@ const Books = () => {
     setCurrentPage(0);
   };
 
-  const isSaveDisabled =
-    !bookTitle || !bookAuthor || quantity === null || !categoryForBook;
-
     const getCurrentDateTime = () => {
       const now = new Date();
-      return now.toISOString().slice(0, 16); 
-  };
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      return now.toISOString().slice(0, 16);
+    };
   
   if (error) return <div>{error}</div>;
 
@@ -380,6 +383,7 @@ const Books = () => {
             }
           }}
           imageSrc={ActionIcon}
+          shouldFilter={false}
           triggerOnHover={true}
         />
       ),
@@ -388,7 +392,7 @@ const Books = () => {
 
   const dataWithSerialNumbers = books.map((book, index) => ({
     ...book,
-    serialNumber: currentPage * 5 + index + 1,
+    serialNumber: currentPage * 8 + index + 1,
   }));
 
   return (
@@ -408,9 +412,7 @@ const Books = () => {
         </div>
         <div>
           <Button
-            className="add-book"
             onClick={() => handleOpenModal(null)}
-            disabled={isSaveDisabled}
           >
             Add Book
           </Button>
@@ -444,20 +446,29 @@ const Books = () => {
               type="text"
               placeholder="Book Title"
               value={bookTitle}
-              onChange={(e) => setBookTitle(e.target.value)}
+              onChange={handleInputChange(setBookTitle)}
             />
             <input
               type="text"
               placeholder="Author"
               value={bookAuthor}
-              onChange={(e) => setBookAuthor(e.target.value)}
+              onChange={handleInputChange(setBookAuthor)}
             />
             <input
-              type="number"
-              placeholder="Quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            />
+  type="text"
+  placeholder="Quantity"
+  value={quantity}
+  onChange={(e) => {
+    const value = e.target.value;
+    setQuantity(value);
+    const validation = validateQuantity(value);
+    if (!validation.valid) {
+      setIssueError(validation.error);
+    } else {
+      setIssueError(null);
+    }
+  }}
+/>
             <select
               value={categoryForBook}
               onChange={(e) => setCategoryForBook(e.target.value)}
@@ -476,29 +487,14 @@ const Books = () => {
 
         {selectedBook && (
           <>
-            <input
-              type="text"
-              placeholder="Book Title"
-              value={bookTitle}
-              readOnly
-            />
-            <input
-              type="text"
-              placeholder="Author"
-              value={bookAuthor}
-              readOnly
-            />
+          
             <input
               type="text"
               placeholder="Mobile Number"
               value={mobileNumber}
               onChange={handleMobileNumberChange}
             />
-            {mobileNumber && userName && (
-              <span className="username-mobile">
-                Username found with name {userName}
-              </span>
-            )}
+          
             <select
               value={issuanceType}
               onChange={(e) => setIssuanceType(e.target.value)}
@@ -515,12 +511,7 @@ const Books = () => {
               </option>
               <option value="ISSUED">Issued</option>
             </select>
-            <input
-              type="text"
-              placeholder="Issued At"
-              value={formatDateTime(new Date())}
-              readOnly
-            />
+          
             <input
               type="datetime-local"
               value={returnedAt}
@@ -529,11 +520,15 @@ const Books = () => {
             />
           </>
         )}
+          {mobileNumber && userName && (
+              <span className="username-mobile">
+                Username found with name {userName}
+              </span>
+            )}
         {issueError && <div className="error-books">{issueError}</div>}
 
       </Modal>
 
-      {/* History Modal */}
       <Modal
         isOpen={isHistoryModalOpen}
         onClose={handleCloseHistoryModal}

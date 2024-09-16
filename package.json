@@ -17,9 +17,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!axios)/'",
+    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!axios)/' --env=jsdom",
     "eject": "react-scripts eject",
-    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage"
+    "coverage": "react-scripts test --transformIgnorePatterns 'node_modules/(?!axios)/' --env=jsdom --watchAll=false --coverage --collectCoverageFrom='src/pages/categories.jsx' --collectCoverageFrom='src/components/category/category.jsx' --collectCoverageFrom='src/utils/constants.js' --collectCoverageFrom='src/components/searchBox.jsx' --collectCoverageFrom='src/components/button.jsx' --collectCoverageFrom='src/components/dropdown.jsx' --collectCoverageFrom='src/pages/header.jsx' --collectCoverageFrom='src/pages/sideNav.jsx' --collectCoverageFrom='src/components/toast.jsx' --collectCoverageFrom='src/components/modal.jsx' --collectCoverageFrom='src/components/hocContainer.jsx' --collectCoverageFrom='src/utils/formValidation.jsx'"
   },
   "eslintConfig": {
     "extends": [

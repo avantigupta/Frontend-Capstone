@@ -1,7 +1,5 @@
-.user-history{
-    position: absolute;
-    left: 45%;
-    top: 50%;
+.user-page{
+    padding: 0;
 }
 
 .heading-user{
@@ -9,13 +7,18 @@
     margin-top: 15px;
 } 
 
-.custom-table{
-    width: 10%;
-}
 
 .btn-history{
     position: absolute;
-    top: 10%;
-    right: 8%;
+    top: 12%;
+    right: 3%;
 }
 
+@media only screen and (max-width: 768px) {
+    .btn-history{
+        top: 9%;
+    }
+    .heading-user{
+        padding-left: 2%;
+    }
+}

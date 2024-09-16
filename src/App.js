@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
 import Books from "./pages/books"
@@ -25,11 +25,16 @@ function App() {
             <Route exact path="/categories" element={<Categories />} /> 
             <Route exact path="/user-history/:userId" element={<UserHistory />} />
             <Route path="/bookHistory/:bookId" element={<BookHistory />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
           </Route>
 
           <Route element={<ProtectedRoutes allowedRoles={['user']} />}>
             <Route exact path="/userPage" element={<UserPage />} />
+            <Route path="*" element={<Navigate to="/userPage" replace />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+
         </Routes>
       </div>
     </Router>

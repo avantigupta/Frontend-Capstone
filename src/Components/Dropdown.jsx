@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/dropdown.css';
 
-const Dropdown = ({ options, onSelect, buttonLabel, placeholder, imageSrc, useInput, triggerOnHover }) => {
+const Dropdown = ({ options, onSelect, buttonLabel, placeholder, imageSrc, useInput, triggerOnHover, shouldFilter=true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -14,6 +14,7 @@ const Dropdown = ({ options, onSelect, buttonLabel, placeholder, imageSrc, useIn
   const handleSelect = (option) => {
     if (!option.disabled) {
       onSelect(option);
+      setInputValue(option?.label)
       setIsOpen(false);
     }
   };
@@ -77,7 +78,7 @@ const Dropdown = ({ options, onSelect, buttonLabel, placeholder, imageSrc, useIn
        
       )}
 
-      {isOpen && (
+      {isOpen && shouldFilter && (
         <div className="dropdown-menu">
           {options
             .filter(option => option.label.toLowerCase().includes(inputValue.toLowerCase()))
@@ -92,6 +93,23 @@ const Dropdown = ({ options, onSelect, buttonLabel, placeholder, imageSrc, useIn
           ))}
         </div>
       )}
+
+      {isOpen && !shouldFilter && (
+        <div className="dropdown-menu">
+          {options
+            .map((option, index) => (
+              <div
+                key={index}
+                onClick={() => handleSelect(option)}
+                className={`dropdown-item ${option.disabled ? 'disabled' : ''}`}
+              >
+                {option.label}
+              </div>
+          ))}
+        </div>
+      )}
+
+
     </div>
   );
 };

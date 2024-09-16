@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Toast from '../components/Toast'; // Adjust import path
+import Toast from '../components/toast'; 
 
 describe('Toast Component', () => {
 

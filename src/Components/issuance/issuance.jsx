@@ -8,6 +8,7 @@ import SearchBox from '../searchBox';
 import '../../styles/issuances.css'
 import Button from '../button';
 import Loader from '../loader';
+import { ISSUANCES_API, ISSUANCES_DELETE, ISSUANCES_UPDATE } from '../../utils/constants';
 
 const Issuances = () => {
     const [toastMessage, setToastMessage] = useState(null);
@@ -44,9 +45,9 @@ const Issuances = () => {
     const getIssuances = async () => {
         setLoading(true)
             try {
-                const response = await fetch_get(`/api/issuances/list`, {
+                const response = await fetch_get(`${ISSUANCES_API}`, {
                     page: currentPage,  
-                    size: 5,
+                    size: 8,
                     search: debouncedSearchQuery
                 });
                 setIssuances(response.data.content);
@@ -96,23 +97,21 @@ const Issuances = () => {
     const handleSaveIssuance = async () => {
         setLoading(true)
         try {
+            setModalOpen(false);
+            setLoading(true);
             const formattedIssuance = {
                 ...editingIssuance,
                 issuedAt: convertToIST(editingIssuance.issuedAt),
                 returnedAt: convertToIST(editingIssuance.returnedAt),
             };
             if (editingIssuance.id) {
-                const result = await fetch_patch(`/api/issuances/update/${editingIssuance.id}`, formattedIssuance);
+                const result = await fetch_patch(`${ISSUANCES_UPDATE}${editingIssuance.id}`, formattedIssuance);
                 showToast(result.data.message);
 
             } 
             handleCloseModal();
-            const response = await fetch_get(`/api/issuances/list`, {
-                page: currentPage,
-                size: 5,
-                search: debouncedSearchQuery
-            });
-            setIssuances(response.data.content);
+            await getIssuances();
+            
         } catch (error) {
             showToast("Failed to update issuance", 'error'); 
         }
@@ -125,12 +124,12 @@ const Issuances = () => {
         setLoading(true);
 
         try {
-            const result = await fetch_delete(`/api/issuances/delete/${issuanceToDelete.id}`);
+            const result = await fetch_delete(`${ISSUANCES_DELETE}${issuanceToDelete.id}`);
             setIssuanceToDelete(null);
             handleCloseModal();
-            const updatedIssuances = await fetch_get(`/api/issuances/list`, {
+            const updatedIssuances = await fetch_get(`${ISSUANCES_API}`, {
                 page: currentPage,
-                size: 5,
+                size: 8,
                 search: debouncedSearchQuery
             });
             setIssuances(updatedIssuances.data.content);
@@ -193,6 +192,7 @@ const Issuances = () => {
         const minutes = String(istTime.getMinutes()).padStart(2, '0');
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     };
+    
     const formatForDisplay = (dateTime) => {
         const convertedIST = convertToIST(dateTime);
         if (!convertedIST) return '';
@@ -209,16 +209,23 @@ const Issuances = () => {
     const columns = [
         { header: 'S.No', accessor: 'serialNumber' },
         { header: 'User', accessor: 'userName' },
-        { header: 'Book', accessor: 'bookTitle' },
-        { header: 'Issue Date', accessor: (row) => formatForDisplay(row.issuedAt) },
-        { header: 'Return Date', accessor: (row) => formatForDisplay(row.returnedAt) },
+        { header: 'Book', accessor: 'bookTitle' }, 
+        { header: 'Issue Date', accessor: (row) => formatForDisplay(row.issuedAt)},
+        { header: 'Return Date', accessor: (row) => formatForDisplay(row.returnedAt)  },
         { header: 'Status', accessor: 'status' },
         { header: 'Type', accessor: 'issuanceType' },
         {
             header: 'Actions',
             accessor: (issuance) => (
                 <>
-                    <Button className="edit-btn" onClick={() => handleOpenModal(issuance)}>Edit</Button>
+                
+                    <Button 
+                        className="edit-btn" 
+                        onClick={() => handleOpenModal(issuance)} 
+                        disabled={issuance.status === "RETURNED"}
+                    >
+                        Edit
+                    </Button>
                     <Button className="delete-btn"  onClick={() => handleOpenDeleteModal(issuance)}>Delete</Button>
                 </>
             )
@@ -227,13 +234,16 @@ const Issuances = () => {
 
     const dataWithSerialNumbers = issuances.map((issuance, index) => ({
         ...issuance,
-        serialNumber: currentPage * 5 + index + 1, 
+        serialNumber: currentPage * 8 + index + 1, 
         userName: issuance.user.name,
         bookTitle: issuance.book.title,
+        status: issuance.status, 
     }));
 
     return (
         <div className="issuance-page">
+            <div className="category-content" >
+
              {toastMessage && (
                     <Toast
                         message={toastMessage}
@@ -241,7 +251,6 @@ const Issuances = () => {
                         onClose={() => setToastMessage(null)}
                     />
                 )}
-            <div className='search'>
                 <SearchBox placeholder="Search..." onSearch={handleSearch}/>
             </div>
             <Modal
@@ -275,15 +284,6 @@ const Issuances = () => {
                         <label>
                             <input
                                 type="datetime-local"
-                                name="issuedAt"
-                                value={convertToIST(editingIssuance?.issuedAt) || ''}
-                                readOnly={!!editingIssuance?.id}
-                                
-                            />
-                        </label>
-                        <label>
-                            <input
-                                type="datetime-local"
                                 name="returnedAt"
                                 value={convertToIST(editingIssuance?.returnedAt) || ''}
                                 onChange={handleChange}
@@ -295,7 +295,6 @@ const Issuances = () => {
                                 name="status"
                                 value={editingIssuance?.status || ''}
                                 onChange={handleChange}
-                               
                             >
                                 <option value="ISSUED">ISSUED</option>
                                 <option value="RETURNED">RETURNED</option>

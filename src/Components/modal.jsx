@@ -9,7 +9,9 @@ const Modal = ({
   title,
   children,
   isDeleteConfirmation,
+  logoutConfirm,
   deleteMessage,
+  logoutMessage,
   successMessage,
 }) => {
   useEffect(() => {
@@ -50,7 +52,17 @@ const Modal = ({
               
             </div>
           </>
-        ) : (
+        ) : logoutConfirm ? (
+<>
+<h2>Confirm Logout</h2>
+<p>{logoutMessage}</p>
+<div className="modal-actions">
+  <Button className="cancel-btn" onClick={onClose}>No</Button>
+  <Button className="add-btn" onClick={onSubmit}>Yes</Button>
+
+</div>
+</>
+        ):(
           <>
             <h2>{title}</h2>
             {children}

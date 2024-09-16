@@ -7,6 +7,7 @@ import { validateForm } from '../utils/formValidation';
 import Toast from "../components/toast";
 import {fetch_post} from '../api/apiManager'
 import Loader from '../components/loader';
+import { SIGNUP } from '../utils/constants';
 
 function Login() {
   const [role, setRole] = useState("admin");
@@ -94,8 +95,7 @@ function Login() {
     };
   
     try {
-      const response = await fetch_post(`api/users/signin`, credentials);
-      console.log(response)
+      const response = await fetch_post(`${SIGNUP}`, credentials);
   
       if (response && response.data) {
         localStorage.setItem("token", response.data.jwtToken);
