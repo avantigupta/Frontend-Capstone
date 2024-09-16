@@ -1,4 +1,4 @@
-const { validateForm } = require('../utils/formValidation'); // Adjust the import path as needed
+const { validateForm } = require('../utils/formValidation'); 
 
 describe('validateForm', () => {
   describe('username validation', () => {
