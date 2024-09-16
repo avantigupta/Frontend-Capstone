@@ -1,0 +1,64 @@
+.book-page{
+    padding: 3%;
+}
+
+.no-books-found{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.book-content{
+    display: grid;
+    grid-template-columns: 25% 10.2%;
+    text-align: left;
+    justify-content: space-between; 
+}
+.book-content input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #F1EAF3;
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.username-mobile{
+color: rgb(47, 130, 47);
+font-size: 14px;
+margin-top: -10px;
+margin-bottom: 10px;
+text-align: left;
+width: 70%; 
+margin-left: auto;
+margin-right: auto;
+}
+
+.error-books{
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    text-align: left;
+    width: 70%; 
+    margin-left: auto;
+    margin-right: auto;
+    color: red;
+}
+
+@media only screen and (max-width: 768px) {
+    .book-page {
+      padding: 5%;
+    }
+
+    .no-books-found {
+      position: static; 
+      text-align: center; 
+    }
+
+    .book-content{
+        grid-template-columns: 25% 20%;
+    }
+}

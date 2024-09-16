@@ -1,25 +1,69 @@
 .sidenav {
-    height: 100%;
-    width: 200px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #ffffff;
-    padding-top: 70px;
+  height: 89.5vh;
+  background-color: #ebe2ed;
+  border-right: 1px solid #c28cd1;
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.3);
+} 
+
+.sidenav ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+  font-weight: 600;
 }
 
 .sidenav a {
-    padding: 10px 20px;
-    text-decoration: none;
-    font-size: 20px;
-    color: rgb(78, 78, 78);
-    display: flex;
-    gap: 20px;
-  }
-  
+  padding: 20px 25px;
+  margin-left: 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #000000; 
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  text-underline-offset: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.icon {
+width: 30px;
+height: 30px;
+border-radius: 2px;
+}
+.sidenav a.active {
+width: 60%;
+border-radius: 2%;
+color: #cb73cb;
+transform: scale(1.05); 
+font-weight: bold; 
+}
 
 .sidenav a:hover {
-    background-color: #ebebeb;
-  }
-  
+color: #cb73cb; 
+transform: scale(1.02); 
+}
+
+@media only screen and (max-width: 768px) {
+.sidenav {
+  height: 91.8vh;
+  transition: 0.5s ease-in-out;
+  padding: 5% 30%;
+}
+
+.sidenav.collapsed {
+  width: 0;
+  padding-left: 0;
+}
+
+.sidenav a span {
+display: none;
+}
+.sidenav a {
+padding: 20px 0px;
+margin-left: 0px;
+display: block;
+width: 0%;
+}
+
+}

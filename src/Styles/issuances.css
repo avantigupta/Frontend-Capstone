@@ -1,0 +1,9 @@
+.issuance-page{
+    padding: 3.5%;
+}
+
+@media only screen and (max-width: 768px) {
+    .issuance-page {
+       padding: 7%;
+    }
+}

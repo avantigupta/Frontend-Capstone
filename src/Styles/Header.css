@@ -1,47 +1,85 @@
- .header{
-    background-color: rgb(255, 255, 255);
-    padding: 15px;
+.header-wrapper {
+    display: flex;
+    background-color: #ebe2ed;
+    justify-content:space-between;
+    align-items: center;
+    padding-left: 15px;
+    padding: 0.8%;
+    border-bottom: 1px solid #c28cd1;
+    box-shadow: 3px 0 5px rgba(0, 0, 0, 0.3);
+}
+  
+.header-title {
+    position: absolute;
+    left: 20%;
+    font-size: 25px;
+    color: #6621BA;
+
+}
+  
+.header-right-section {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-
+    padding-right: 1.8%;
+    gap: 35px;
 }
-.logo{
-    z-index: 100;
-}
-.header a{
-    text-decoration: none;
-    color: rgb(78, 78, 78);
-
-} 
   
-.header img {
-    width: 40px; /* Adjust the size of the profile image */
+.header-profile-img {
+    width: 40px;
     height: 40px;
-    border-radius: 50%; /* Makes the image circular */
-    object-fit: cover;
-    border: 2px solid #939393; /* Adds a white border around the image */
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1px solid rgb(153, 153, 153);
+
+}
+  
+.header-profile-name {
+    display: none;
+    position: absolute;
+    top: 11%;
+    right: 1%;
+    background-color: #F1EAF3; 
+    color: purple;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 5px;
+    font-size: 15px;
+    white-space: nowrap;
+    border: 1px solid rgb(208, 202, 202);
+}
+  
+.header-profile-section:hover .header-profile-name {
+    display: block;
+}
+
+.logo-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 2%;
+}
+
+.logo-name{
+  font-size: 20px;
+  font-weight: 600;
+  color: #6621BA;
+}
+
+.logo-img{
+  width: 40px;
+  height: 40px;
+}
+
+@media only screen and (max-width: 768px) {
+  .header-wrapper {
+      padding: 0px;
+  }
+  .logo-div{
+      flex-direction: column;
+      padding-left: 0%;
+  }
+  .header-right-section{
+    padding-right: 4%;
   }
 
-.search-input{
-    padding: 12px;
-    width: 19%;
-    background-color: #F7F1F7;
-    border-radius: 50px;
-    border: 1px solid rgb(170, 170, 170);
-}
-
-.bg-img{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 400px;
-}
-
-.bg-libraries-img{
-    position: absolute;
-    bottom: 60px;
-    right: 50px;
-    width: 450px;
 }

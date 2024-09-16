@@ -1,0 +1,17 @@
+.book-page-title{
+ font-size: 20px;
+ font-weight: 500;
+}
+
+.book-history{
+    align-items: center;
+    display: flex;
+}
+
+.arrow{
+    padding: 2%;
+}
+
+.book-history-page{
+    padding: 1.2%;
+}

@@ -1,0 +1,22 @@
+.user-page{
+    padding: 0 3% ;
+}
+
+.heading-user{
+    margin-top: 15px;
+} 
+
+.btn-history{
+    position: absolute;
+    top: 12%;
+    right: 3%;
+}
+
+@media only screen and (max-width: 768px) {
+    .btn-history{
+        top: 9%;
+    }
+    .heading-user{
+        padding-left: 2%;
+    }
+}

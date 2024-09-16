@@ -1,0 +1,86 @@
+.category-page {
+  padding: 3%;
+}
+.category-content{
+  display: grid;
+  grid-template-columns: 25% 15%;
+  text-align: left;
+  justify-content: space-between; 
+}
+.edit-btn, .delete-btn, .assign-btn{
+  background-color: #794787;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.3s;
+}
+.edit-btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.assign-btn{
+  background-color: rgb(43, 139, 43)
+}
+.assign-btn:hover{
+  background-color: rgb(47, 109, 47);
+}
+.edit-btn:hover, .delete-btn:hover {
+  background-color: #8057af; 
+}
+
+.delete-btn {
+  background-color: #ff5757;
+}
+
+.delete-btn:hover {
+  background-color: #e34e4e; 
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  width: 1150px;
+  gap: 20px;
+}
+
+.pagination-controls button {
+  padding: 10px 20px;
+  background-color: #794787;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  
+  .category-page {
+    padding: 5% ;
+}
+
+.category-content {
+  grid-template-columns: 25% 26%;
+
+}
+
+.edit-btn, .delete-btn, .assign-btn {
+    margin-bottom: 5px;
+}
+
+.pagination-controls {
+    width: 100%;
+}
+} 

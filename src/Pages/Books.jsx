@@ -1,11 +1,10 @@
 import React from 'react'
+import Book from '../components/books/book'
 
-function Books() {
+export default function Books() {
   return (
     <div>
-      
+      <Book />
     </div>
   )
 }
-
-export default Books
