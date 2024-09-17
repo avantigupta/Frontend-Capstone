@@ -223,24 +223,72 @@
         const handleSelectBook = (book) => {
             setSelectedBook(book);
         };
-        
+        const handleReturnTimeChange = (e) => {
+            const selectedTime = e.target.value;
+            const [hours, minutes] = selectedTime.split(':');
+            const selectedDate = new Date();
+            selectedDate.setHours(hours, minutes, 0, 0);
+            const currentDate = new Date();
+            if (selectedDate <= currentDate) {
+                setIssueError("Cannot select a time in the past.");
+                setReturnTime("");
+            } else {
+                setReturnTime(selectedTime);
+                setIssueError("");
+            }
+        };
+    
+        const handleReturnedAtChange = (e) => {
+            const selectedDate = new Date(e.target.value);
+            const currentDate = new Date();
+            if (selectedDate <= currentDate) {
+                setIssueError("Cannot select a date and time in the past.");
+                setReturnedAt(null);
+            } else {
+                setReturnedAt(e.target.value);
+                setIssueError("");
+            }
+        };
+    
         const handleIssueBook = async () => {
             setLoading(true)
             if (!selectedBook || !issuanceType || (!returnedAt && issuanceType === "Takeaway") || (!returnTime && issuanceType === "InHouse") || !editingUserId) {
                 setIssueError('All fields are required for issuing a book.');
                 return;
             }
-            getBooks();
+            let isValid = true;
+                if (issuanceType === "InHouse") {
+                    const [hours, minutes] = returnTime.split(':');
+                    const selectedDate = new Date();
+                    selectedDate.setHours(hours, minutes, 0, 0);
+                    const currentDate = new Date();
+                    if (selectedDate <= currentDate) {
+                        setIssueError("Cannot select a time in the past.");
+                        isValid = false;
+                    }
+                } else {
+                    const selectedDate = new Date(returnedAt);
+                    const currentDate = new Date();
+                    if (selectedDate <= currentDate) {
+                        setIssueError("Cannot select a date and time in the past.");
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    setLoading(false);
+                    return;
+                }
+                getBooks();
             try {
                 setModalOpen(false);
-                setLoading(true);
-                let formattedReturnedAt;
-            if (issuanceType === "InHouse") {
-                const currentDate = new Date().toISOString().split('T')[0];
-                formattedReturnedAt = formatDateTime(new Date(`${currentDate}T${returnTime}:00`));
-            } else {
-                formattedReturnedAt = formatDateTime(new Date(returnedAt));
-            }
+                    let formattedReturnedAt;
+                if (issuanceType === "InHouse") {
+                    const currentDate = new Date().toISOString().split('T')[0];
+                    formattedReturnedAt = formatDateTime(new Date(`${currentDate}T${returnTime}:00`));
+                } else {
+                    formattedReturnedAt = formatDateTime(new Date(returnedAt));
+                }
                 const issuanceData = {
                     userId: editingUserId,
                     bookId: selectedBook.value,
@@ -418,6 +466,7 @@
                                 setIssuanceType(e.target.value);
                                 setReturnedAt(null);
                                 setReturnTime("");
+                                setIssueError(""); 
                             }}
                         >       
                     <option value="" disabled>Select Issuance Type</option>
@@ -428,14 +477,14 @@
                             <input
                                 type="time"
                                 value={returnTime}
-                                onChange={(e) => setReturnTime(e.target.value)}
+                                onChange={handleReturnTimeChange}
                                 min={getCurrentTime()}
                             />
                         ) : (
                             <input
                                 type="datetime-local"
                                 value={returnedAt}
-                                onChange={(e) => setReturnedAt(e.target.value)}
+                                onChange={handleReturnedAtChange }
                                 min={getCurrentDateTime()}
                             />
                 )}
