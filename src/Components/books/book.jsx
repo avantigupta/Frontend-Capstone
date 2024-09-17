@@ -365,6 +365,33 @@ const Books = () => {
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       return now.toISOString().slice(0, 16);
   };
+
+  const handleReturnTimeChange = (e) => {
+    const selectedTime = e.target.value;
+    const [hours, minutes] = selectedTime.split(':');
+    const selectedDate = new Date();
+    selectedDate.setHours(hours, minutes, 0, 0);
+    const currentDate = new Date();
+    if (selectedDate <= currentDate) {
+      setIssueError("Cannot select a time in the past.");
+      setReturnTime("");
+    } else {
+      setReturnTime(selectedTime);
+      setIssueError("");
+    }
+  };
+
+  const handleReturnedAtChange = (e) => {
+    const selectedDate = new Date(e.target.value);
+    const currentDate = new Date();
+    if (selectedDate <= currentDate) {
+      setIssueError("Cannot select a date and time in the past.");
+      setReturnedAt(null);
+    } else {
+      setReturnedAt(e.target.value);
+      setIssueError("");
+    }
+  };
   
   if (error) return <div>{error}</div>;
 
@@ -466,20 +493,20 @@ const Books = () => {
               onChange={handleInputChange(setBookAuthor)}
             />
             <input
-  type="text"
-  placeholder="Quantity"
-  value={quantity}
-  onChange={(e) => {
-    const value = e.target.value;
-    setQuantity(value);
-    const validation = validateQuantity(value);
-    if (!validation.valid) {
-      setIssueError(validation.error);
-    } else {
-      setIssueError(null);
-    }
-  }}
-/>
+             type="text"
+                    placeholder="Quantity"
+                    value={quantity}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setQuantity(value);
+                      const validation = validateQuantity(value);
+                      if (!validation.valid) {
+                        setIssueError(validation.error);
+                      } else {
+                        setIssueError(null);
+                      }
+                    }}
+                  />
             <select
               value={categoryForBook}
               onChange={(e) => setCategoryForBook(e.target.value)}
@@ -527,14 +554,14 @@ const Books = () => {
               <input
                 type="time"
                 value={returnTime}
-                onChange={(e) => setReturnTime(e.target.value)}
+                onChange={handleReturnTimeChange}
                 min={getCurrentTime()}
               />
             ) : (
               <input
                 type="datetime-local"
                 value={returnedAt}
-                onChange={(e) => setReturnedAt(e.target.value)}
+                onChange={handleReturnedAtChange}
                 min={getCurrentDateTime()}
               />
             )}

@@ -23,6 +23,7 @@ const Issuances = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [searchQuery, setSearchQuery] = useState(''); 
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+    const [issueError, setIssueError] = useState("");
     
    useEffect(() => {
     const handler = setTimeout(() => {
@@ -87,11 +88,6 @@ const Issuances = () => {
 
     const handleCloseModal = () => {
         setModalOpen(false);
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEditingIssuance((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSaveIssuance = async () => {
@@ -168,14 +164,10 @@ const Issuances = () => {
 
     const getCurrentDateTime = () => {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-    
-        return `${year}-${month}-${day}T${hours}:${minutes}`; 
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        return now.toISOString().slice(0, 16);
     };
+
     
     const convertToIST = (dateTime) => {
         if (!dateTime) return '';
@@ -204,6 +196,20 @@ const Issuances = () => {
         const minutes = timePart[1];
       
         return `${datePart}, ${hours}:${minutes}`; 
+    };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'returnedAt') {
+            const selectedDate = new Date(value);
+            const currentDate = new Date();
+            if (selectedDate <= currentDate) {
+                setIssueError("Cannot select a date and time in the past.");
+                return;
+            } else {
+                setIssueError("");
+            }
+        }
+        setEditingIssuance((prev) => ({ ...prev, [name]: value }));
     };
 
     const columns = [
@@ -300,7 +306,8 @@ const Issuances = () => {
                                 <option value="RETURNED">RETURNED</option>
                             </select>
                         </label>
-                      
+                        {issueError && <div className="error-books">{issueError}</div>}
+
                     </div>
                 )}
             </Modal>
